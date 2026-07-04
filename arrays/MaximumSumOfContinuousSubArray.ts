@@ -1,3 +1,9 @@
+
+/*AT EVERY NUMBER-----
+    Should I start a new subarray from current number?
+    or
+    Should I continue the previous subarray?*/
+
 const maxSubArray = (ar : number[])=>{
     let maxSum= ar[0];
     let currentSum= ar[0];
