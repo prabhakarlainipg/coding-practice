@@ -1,6 +1,6 @@
 class MinStack {
-    private stack: number[];
-    private minStack: number[];
+    private readonly stack: number[];
+    private readonly minStack: number[];
 
     constructor() {
         this.stack =[];

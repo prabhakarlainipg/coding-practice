@@ -20,3 +20,4 @@ while (left < right) {
 
 
 console.log(maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7])); // 49
+console.log(maxArea([2, 1, 5, 6, 2, 3])); // 10
