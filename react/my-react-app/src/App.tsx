@@ -1,6 +1,7 @@
 //import PropsComponent from "./components/Props.tsx";
 import {Counter} from "./components/State.tsx";
-import {UnControlledComp} from "./components/UnControlledComp.tsx";
+//import {UnControlledComp} from "./components/UnControlledComp.tsx";
+//import {ClassCompCounter} from "./components/ReactCalssComp.tsx";
 
 function App() {
   return (
@@ -9,8 +10,11 @@ function App() {
 {/*
        <PropsComponent/>
 */}
-          <Counter/>
-          <UnControlledComp/>
+         <Counter/>
+        {/*  <UnControlledComp/>*/}
+{/*
+      <ClassCompCounter/>
+*/}
       </div>
   );
 }
