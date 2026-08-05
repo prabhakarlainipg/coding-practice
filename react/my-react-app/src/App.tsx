@@ -1,12 +1,10 @@
-import Button from "./components/Button.tsx";
+import PropsComponent from "./components/Props.tsx";
 
 function App() {
   return (
       <div>
         <h1>My App</h1>
-        <Button label="Save" />
-        <Button label="Cancel" />
-        <Button label="Delete" />
+       <PropsComponent/>
       </div>
   );
 }
