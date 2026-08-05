@@ -2,8 +2,10 @@
 //import {Counter} from "./components/State.tsx";
 //import {UnControlledComp} from "./components/UnControlledComp.tsx";
 //import {ClassCompCounter} from "./components/ReactCalssComp.tsx";
+import { ErrorBoundary } from "react-error-boundary";
 
 import {ReducerCounter} from "./components/ReducerCounter.tsx";
+import {ErrorComp} from "./components/ErrorComp.tsx";
 
 function App() {
   return (
@@ -20,6 +22,10 @@ function App() {
       <ClassCompCounter/>
 */}
           <ReducerCounter/>
+          <ErrorBoundary fallback={<div>Something went wrong!!</div>}>
+              <ErrorComp/>
+          </ErrorBoundary>
+
       </div>
   );
 }
