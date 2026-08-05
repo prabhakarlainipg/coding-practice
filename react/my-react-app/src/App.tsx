@@ -2,29 +2,40 @@
 //import {Counter} from "./components/State.tsx";
 //import {UnControlledComp} from "./components/UnControlledComp.tsx";
 //import {ClassCompCounter} from "./components/ReactCalssComp.tsx";
-import { ErrorBoundary } from "react-error-boundary";
+//import { ErrorBoundary } from "react-error-boundary";
 
-import {ReducerCounter} from "./components/ReducerCounter.tsx";
-import {ErrorComp} from "./components/ErrorComp.tsx";
+//import {ReducerCounter} from "./components/ReducerCounter.tsx";
+//import {ErrorComp} from "./components/ErrorComp.tsx";
+
+import {Modal} from "./components/Modal.tsx";
 
 function App() {
   return (
       <div>
-        <h1>My App</h1>
-{/*
+          <h1>My App</h1>
+          {/*
        <PropsComponent/>
 */}
-{/*
+          {/*
          <Counter/>
 */}
-        {/*  <UnControlledComp/>*/}
-{/*
+          {/*  <UnControlledComp/>*/}
+          {/*
       <ClassCompCounter/>
 */}
-          <ReducerCounter/>
+          {/*<ReducerCounter/>
           <ErrorBoundary fallback={<div>Something went wrong!!</div>}>
               <ErrorComp/>
-          </ErrorBoundary>
+          </ErrorBoundary>*/}
+
+          <div>
+              <h1>Dashboard</h1>
+
+              <Modal>
+                  <h2>Confirm Delete</h2>
+                  <button>Delete</button>
+              </Modal>
+          </div>
 
       </div>
   );
