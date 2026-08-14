@@ -10,7 +10,8 @@
 //import {Modal} from "./components/Modal.tsx";
 
 //import Employees from "./components/Employees.tsx";
-import EmployeesList from "./components/EmployeesLIst.tsx";
+//import EmployeesList from "./components/EmployeesLIst.tsx";
+import InfiniteScroll from "./components/InfiniteScrollUsingINtersectionObserver.tsx";
 
 function App() {
   return (
@@ -41,7 +42,10 @@ function App() {
                   <button>Delete</button>
               </Modal>*/}
 
+{/*
 <EmployeesList/>
+*/}
+              <InfiniteScroll/>
 
           </div>
 
