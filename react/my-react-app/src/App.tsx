@@ -7,7 +7,10 @@
 //import {ReducerCounter} from "./components/ReducerCounter.tsx";
 //import {ErrorComp} from "./components/ErrorComp.tsx";
 
-import {Modal} from "./components/Modal.tsx";
+//import {Modal} from "./components/Modal.tsx";
+
+//import Employees from "./components/Employees.tsx";
+import EmployeesList from "./components/EmployeesLIst.tsx";
 
 function App() {
   return (
@@ -29,12 +32,17 @@ function App() {
           </ErrorBoundary>*/}
 
           <div>
+{/*
               <h1>Dashboard</h1>
-
+*/}
+{/*
               <Modal>
                   <h2>Confirm Delete</h2>
                   <button>Delete</button>
-              </Modal>
+              </Modal>*/}
+
+<EmployeesList/>
+
           </div>
 
       </div>
