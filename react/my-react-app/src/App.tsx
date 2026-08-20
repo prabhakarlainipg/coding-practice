@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { queryClient } from './app/queryClient'
 import { AppLayout } from './layouts/AppLayout'
+import { CreatePostPage } from './pages/CreatePostPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PostDetailPage } from './pages/PostDetailPage'
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
 */
       { index: true, element: <DashboardPage /> },
       { path: 'posts', element: <PostsPage /> },
+      { path: 'posts/new', element: <CreatePostPage /> },
 /*
 :postId is a dynamic route segment.
 */

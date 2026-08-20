@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { PostCard } from '../features/posts/components/PostCard'
 import { usePosts } from '../features/posts/queries/usePosts'
 import { getErrorMessage } from '../lib/getErrorMessage'
@@ -108,6 +108,7 @@ export function PostsPage() {
             >
               {isFetching ? 'Refreshing…' : 'Refresh'}
             </button>
+            <Link className="primary-link" to="/posts/new">Create post</Link>
           </div>
         )}
       </div>
