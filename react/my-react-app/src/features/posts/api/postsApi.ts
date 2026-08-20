@@ -1,6 +1,6 @@
 import { request } from '../../../lib/httpClient'
 import { postSchema, postsSchema } from '../types/post'
-import type { Post } from '../types/post'
+import type { CreatePostInput, Post } from '../types/post'
 
 export async function getPosts(signal?: AbortSignal): Promise<Post[]> {
   const data = await request<unknown>('/posts', { signal })
@@ -14,6 +14,16 @@ export async function getPostById(
   signal?: AbortSignal,
 ): Promise<Post> {
   const data = await request<unknown>(`/posts/${postId}`, { signal })
+  return postSchema.parse(data)
+}
+
+export async function createPost(input: CreatePostInput): Promise<Post> {
+  const data = await request<unknown>('/posts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+
   return postSchema.parse(data)
 }
 /*

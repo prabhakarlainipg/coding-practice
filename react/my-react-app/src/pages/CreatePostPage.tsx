@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { useCreatePost } from '../features/posts/mutations/useCreatePost'
 import { createPostSchema, type CreatePostInput } from '../features/posts/types/post'
+import { getErrorMessage } from '../lib/getErrorMessage'
 
 const defaultValues: CreatePostInput = { userId: 1, title: '', body: '' }
 /*
@@ -16,7 +17,7 @@ Invalid → display field errors
 Valid   → setPreview(validatedData)
 */
 export function CreatePostPage() {
-  const [preview, setPreview] = useState<CreatePostInput | null>(null)
+  const createPostMutation = useCreatePost()
  /* Performance is an important aspect of user experience in terms of building forms.
       You have the ability to subscribe to individual input and form state updates without re-rendering the entire form.
        It has a lot of useful tools and doesn’t require much code compared to Formik, and Redux Form.
@@ -37,7 +38,7 @@ export function CreatePostPage() {
     formState describes errors and user interaction.
     isDirty — at least one value differs from its default
 */
-    formState: { errors, isDirty, isSubmitting, isSubmitSuccessful, touchedFields },
+    formState: { errors, isDirty, isSubmitting, touchedFields },
   } = useForm<CreatePostInput>({
     resolver: zodResolver(createPostSchema),
     defaultValues,
@@ -49,7 +50,27 @@ export function CreatePostPage() {
 
   function resetForm() {
     reset(defaultValues)
-    setPreview(null)
+    createPostMutation.reset()
+  }
+
+  async function submitForm(data: CreatePostInput) {
+    try {
+      //mutateAsync is TanStack Query’s Promise-based function
+      // for executing a mutation.
+      //mutate starts the mutation but does not return a Promise containing the mutation result.
+      // Callbacks are commonly used:
+      //createPostMutation.mutate(data, {
+      //   onSuccess: (createdPost) => {
+      //     console.log(createdPost)
+      //   },
+      //   onError: (error) => {
+      //     console.error(error)
+      //   },
+      // })
+      await createPostMutation.mutateAsync(data)
+    } catch {
+      // The mutation stores the error and the page renders it below the form.
+    }
   }
 
   return (
@@ -67,7 +88,7 @@ export function CreatePostPage() {
           </span>
         </div>
 
-        <form onSubmit={handleSubmit(setPreview)} noValidate>
+        <form onSubmit={handleSubmit(submitForm)} noValidate>
           <div className="form-field">
             <label htmlFor="userId">User ID</label>
             <input
@@ -119,23 +140,31 @@ export function CreatePostPage() {
 
           <div className="form-summary" aria-live="polite">
             {Object.keys(touchedFields).length} fields visited
-            {isSubmitSuccessful && ' · Validation passed'}
+            {createPostMutation.isSuccess && ' · Post created'}
           </div>
           <div className="form-actions">
-            <button className="primary-button" disabled={isSubmitting} type="submit">
-              {isSubmitting ? 'Validating…' : 'Validate post'}
+            <button className="primary-button" disabled={isSubmitting || createPostMutation.isPending} type="submit">
+              {isSubmitting || createPostMutation.isPending ? 'Creating…' : 'Create post'}
             </button>
-            <button className="secondary-button" disabled={!isDirty} type="button" onClick={resetForm}>Reset</button>
+            <button className="secondary-button" disabled={!isDirty && createPostMutation.isIdle} type="button" onClick={resetForm}>Reset</button>
           </div>
         </form>
       </div>
 
-      {preview && (
+      {createPostMutation.isError && (
+        <div className="mutation-message mutation-message--error" role="alert">
+          <h2>Post creation failed</h2>
+          <p>{getErrorMessage(createPostMutation.error, 'create post')}</p>
+        </div>
+      )}
+
+      {createPostMutation.isSuccess && (
         <article className="post-preview" aria-labelledby="preview-heading">
-          <p className="eyebrow">Validated preview</p>
-          <h2 id="preview-heading">{preview.title}</h2>
-          <p>{preview.body}</p>
-          <span>User {preview.userId}</span>
+          <p className="eyebrow">Server confirmed</p>
+          <h2 id="preview-heading">{createPostMutation.data.title}</h2>
+          <p>{createPostMutation.data.body}</p>
+          <span>User {createPostMutation.data.userId} · Post #{createPostMutation.data.id}</span>
+          <Link className="text-link" to={`/posts/${createPostMutation.data.id}`}>View created post</Link>
         </article>
       )}
     </section>

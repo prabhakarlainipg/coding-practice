@@ -107,6 +107,11 @@
 .post-preview h2 { margin: 8px 0 12px; color: #20283a; text-transform: capitalize; }
 .post-preview > p:last-of-type { color: #687386; line-height: 1.65; }
 .post-preview span { display: inline-block; margin-top: 14px; color: #7c8699; font-size: 12px; font-weight: 800; }
+.mutation-message { margin-top: 22px; padding: 22px; border: 1px solid #e3e8f0; border-radius: 12px; background: #fff; }
+.mutation-message--error { border-color: #f2c8c8; background: #fffafa; }
+.mutation-message h2, .mutation-message p { margin: 0; }
+.mutation-message h2 { color: #9f2929; font-size: 18px; }
+.mutation-message p { margin-top: 7px; color: #687386; }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 26px; }
 .pagination span { color: #687386; font-size: 13px; font-weight: 700; }
 .pagination button { padding: 9px 14px; border: 1px solid #d8ddeb; border-radius: 8px; color: #4d4fce; background: #fff; font-weight: 800; cursor: pointer; }
