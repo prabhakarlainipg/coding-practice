@@ -5,6 +5,19 @@ import { PostCard } from '../features/posts/components/PostCard'
 import { usePosts } from '../features/posts/queries/usePosts'
 import { HttpError } from '../lib/httpClient'
 
+const PAGE_SIZE = 10
+const sortOptions = ['newest', 'oldest', 'title'] as const
+type SortOption = (typeof sortOptions)[number]
+
+function isSortOption(value: string | null): value is SortOption {
+  return sortOptions.some((option) => option === value)
+}
+
+function getPageNumber(value: string | null): number {
+  const page = Number(value)
+  return Number.isInteger(page) && page > 0 ? page : 1
+}
+
 function getErrorMessage(error: unknown): string {
   if (error instanceof HttpError) {
     return `The posts request failed (${error.status}).`
@@ -27,16 +40,31 @@ export function PostsPage() {
   const { data: posts = [], error, isError, isFetching, isPending, refetch } =
     usePosts()
   const searchTerm = searchParams.get('q') ?? ''
+  const sortParam = searchParams.get('sort')
+  const sort: SortOption = isSortOption(sortParam) ? sortParam : 'newest'
+  const requestedPage = getPageNumber(searchParams.get('page'))
 
-  const filteredPosts = useMemo(() => {
+  const sortedPosts = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase()
+    const matchingPosts = normalizedSearch
+      ? posts.filter((post) =>
+          `${post.title} ${post.body}`
+            .toLocaleLowerCase()
+            .includes(normalizedSearch),
+        )
+      : posts
 
-    if (!normalizedSearch) return posts
+    return [...matchingPosts].sort((firstPost, secondPost) => {
+      if (sort === 'title') return firstPost.title.localeCompare(secondPost.title)
+      if (sort === 'oldest') return firstPost.id - secondPost.id
+      return secondPost.id - firstPost.id
+    })
+  }, [posts, searchTerm, sort])
 
-    return posts.filter((post) =>
-      `${post.title} ${post.body}`.toLocaleLowerCase().includes(normalizedSearch),
-    )
-  }, [posts, searchTerm])
+  const totalPages = Math.max(1, Math.ceil(sortedPosts.length / PAGE_SIZE))
+  const currentPage = Math.min(requestedPage, totalPages)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const visiblePosts = sortedPosts.slice(pageStart, pageStart + PAGE_SIZE)
 
   function updateSearch(value: string) {
     const nextSearchParams = new URLSearchParams(searchParams)
@@ -46,8 +74,28 @@ export function PostsPage() {
     } else {
       nextSearchParams.delete('q')
     }
+    nextSearchParams.delete('page')
 
     setSearchParams(nextSearchParams, { replace: true })
+  }
+
+  function updateSort(value: SortOption) {
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    if (value === 'newest') nextSearchParams.delete('sort')
+    else nextSearchParams.set('sort', value)
+    nextSearchParams.delete('page')
+
+    setSearchParams(nextSearchParams)
+  }
+
+  function updatePage(page: number) {
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    if (page === 1) nextSearchParams.delete('page')
+    else nextSearchParams.set('page', String(page))
+
+    setSearchParams(nextSearchParams)
   }
 
   return (
@@ -62,7 +110,7 @@ export function PostsPage() {
         {!isPending && !isError && (
           <div className="page-actions">
             <span className="result-count">
-              {filteredPosts.length} of {posts.length} posts
+              {sortedPosts.length} of {posts.length} posts
             </span>
             <button
               className="secondary-button"
@@ -77,21 +125,35 @@ export function PostsPage() {
       </div>
 
       {!isPending && !isError && (
-        <div className="search-bar" role="search">
-          <label htmlFor="post-search">Search posts</label>
-          <div className="search-bar__control">
-            <input
-              id="post-search"
-              type="search"
-              value={searchTerm}
-              placeholder="Search by title or content"
-              onChange={(event) => updateSearch(event.target.value)}
-            />
-            {searchTerm && (
-              <button type="button" onClick={() => updateSearch('')}>
-                Clear
-              </button>
-            )}
+        <div className="filter-bar">
+          <div className="search-bar" role="search">
+            <label htmlFor="post-search">Search posts</label>
+            <div className="search-bar__control">
+              <input
+                id="post-search"
+                type="search"
+                value={searchTerm}
+                placeholder="Search by title or content"
+                onChange={(event) => updateSearch(event.target.value)}
+              />
+              {searchTerm && (
+                <button type="button" onClick={() => updateSearch('')}>
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="sort-control">
+            <label htmlFor="post-sort">Sort posts</label>
+            <select
+              id="post-sort"
+              value={sort}
+              onChange={(event) => updateSort(event.target.value as SortOption)}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">Title A–Z</option>
+            </select>
           </div>
         </div>
       )}
@@ -120,7 +182,7 @@ export function PostsPage() {
         </div>
       )}
 
-      {!isPending && !isError && posts.length > 0 && filteredPosts.length === 0 && (
+      {!isPending && !isError && posts.length > 0 && sortedPosts.length === 0 && (
         <div className="state-panel">
           <h2>No matching posts</h2>
           <p>Try a different search term or clear the current search.</p>
@@ -130,12 +192,33 @@ export function PostsPage() {
         </div>
       )}
 
-      {!isPending && !isError && filteredPosts.length > 0 && (
-        <div className="posts-grid">
-          {filteredPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+      {!isPending && !isError && sortedPosts.length > 0 && (
+        <>
+          <div className="posts-grid">
+            {visiblePosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+          <nav className="pagination" aria-label="Posts pagination">
+            <button
+              type="button"
+              disabled={currentPage === 1}
+              onClick={() => updatePage(currentPage - 1)}
+            >
+              Previous
+            </button>
+            <span aria-live="polite">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              disabled={currentPage === totalPages}
+              onClick={() => updatePage(currentPage + 1)}
+            >
+              Next
+            </button>
+          </nav>
+        </>
       )}
     </section>
   )
