@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ZodError } from 'zod'
 import { PostCard } from '../features/posts/components/PostCard'
 import { usePosts } from '../features/posts/queries/usePosts'
-import { HttpError } from '../lib/httpClient'
+import { getErrorMessage } from '../lib/getErrorMessage'
 
 const PAGE_SIZE = 10
 const sortOptions = ['newest', 'oldest', 'title'] as const
@@ -16,17 +15,6 @@ function isSortOption(value: string | null): value is SortOption {
 function getPageNumber(value: string | null): number {
   const page = Number(value)
   return Number.isInteger(page) && page > 0 ? page : 1
-}
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof HttpError) {
-    return `The posts request failed (${error.status}).`
-  }
-  if (error instanceof ZodError) {
-    return 'The API returned data in an unexpected format.'
-  }
-  if (error instanceof Error) return error.message
-  return 'An unexpected error occurred.'
 }
 
 export function PostsPage() {
@@ -168,7 +156,7 @@ export function PostsPage() {
       {isError && (
         <div className="state-panel state-panel--error" role="alert">
           <h2>We couldn’t load the posts</h2>
-          <p>{getErrorMessage(error)}</p>
+          <p>{getErrorMessage(error, 'posts')}</p>
           <button type="button" onClick={() => void refetch()}>
             Try again
           </button>

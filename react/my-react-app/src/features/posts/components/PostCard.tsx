@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Post } from '../types/post'
 
 type PostCardProps = { post: Post }
@@ -9,8 +10,13 @@ export function PostCard({ post }: PostCardProps) {
         <span>Post #{post.id}</span>
         <span>User {post.userId}</span>
       </div>
-      <h2>{post.title}</h2>
+      <h2>
+        <Link to={`/posts/${post.id}`}>{post.title}</Link>
+      </h2>
       <p>{post.body}</p>
+      <Link className="post-card__link" to={`/posts/${post.id}`}>
+        Read post
+      </Link>
     </article>
   )
 }

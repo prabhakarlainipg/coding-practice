@@ -6,6 +6,7 @@ import { queryClient } from './app/queryClient'
 import { AppLayout } from './layouts/AppLayout'
 import { DashboardPage } from './pages/DashboardPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { PostDetailPage } from './pages/PostDetailPage'
 import { PostsPage } from './pages/PostsPage'
 import { TodosPage } from './pages/TodosPage'
 import { UsersPage } from './pages/UsersPage'
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
 */
       { index: true, element: <DashboardPage /> },
       { path: 'posts', element: <PostsPage /> },
+/*
+:postId is a dynamic route segment.
+*/
+      { path: 'posts/:postId', element: <PostDetailPage /> },
       { path: 'users', element: <UsersPage /> },
       { path: 'todos', element: <TodosPage /> },
 /*
