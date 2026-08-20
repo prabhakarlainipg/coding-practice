@@ -72,6 +72,16 @@
 .post-detail__meta { display: flex; flex-wrap: wrap; gap: 12px 22px; color: #7c8699; font-size: 12px; font-weight: 800; }
 .post-detail h1 { max-width: 700px; margin: 24px 0 18px; color: #151b27; font-size: clamp(30px, 5vw, 48px); line-height: 1.12; letter-spacing: -.04em; text-transform: capitalize; }
 .post-detail > p { margin: 0; color: #5f6b7e; font-size: 18px; line-height: 1.75; }
+.post-detail__actions { margin-top: 30px; padding-top: 24px; border-top: 1px solid #edf0f5; }
+.danger-button { padding: 9px 14px; border: 1px solid #d64f4f; border-radius: 8px; color: #b42318; background: #fff; font-weight: 800; cursor: pointer; }
+.danger-button:hover:not(:disabled) { color: #fff; background: #b42318; }
+.danger-button:disabled { cursor: wait; opacity: .6; }
+.danger-button:focus-visible { outline: 3px solid rgba(180, 35, 24, .25); outline-offset: 2px; }
+.delete-confirmation { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px; border: 1px solid #f2c8c8; border-radius: 10px; background: #fffafa; }
+.delete-confirmation > div { flex: 1 1 240px; display: grid; gap: 2px; }
+.delete-confirmation strong { color: #8e211a; }
+.delete-confirmation span { color: #7c6565; font-size: 12px; }
+.delete-error { margin: 12px 0 0; color: #b42318; font-size: 13px; font-weight: 700; }
 .comments { margin-top: 24px; padding: clamp(24px, 4vw, 38px); border: 1px solid #e3e8f0; border-radius: 16px; background: #fff; }
 .comments__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
 .comments__heading h2 { margin: 6px 0 0; color: #20283a; font-size: 24px; }

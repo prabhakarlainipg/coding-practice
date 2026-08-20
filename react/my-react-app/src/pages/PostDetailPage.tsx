@@ -1,6 +1,8 @@
-import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { z } from 'zod'
 import { PostComments } from '../features/comments/components/PostComments'
+import { useDeletePost } from '../features/posts/mutations/useDeletePost'
 import { usePost } from '../features/posts/queries/usePosts'
 import { getErrorMessage } from '../lib/getErrorMessage'
 
@@ -8,8 +10,20 @@ import { getErrorMessage } from '../lib/getErrorMessage'
 const postIdSchema = z.coerce.number().int().positive()
 
 function PostDetail({ postId }: { postId: number }) {
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+  const navigate = useNavigate()
+  const deletePostMutation = useDeletePost()
   const { data: post, error, isError, isFetching, isPending, refetch } =
     usePost(postId)
+
+  async function confirmDelete() {
+    try {
+      await deletePostMutation.mutateAsync(postId)
+      navigate('/posts')
+    } catch {
+      // The mutation exposes the error through its error state.
+    }
+  }
 
   let postContent
 
@@ -38,6 +52,41 @@ function PostDetail({ postId }: { postId: number }) {
         </div>
         <h1 id="post-detail-heading">{post.title}</h1>
         <p>{post.body}</p>
+        <div className="post-detail__actions">
+          {isConfirmingDelete ? (
+            <div className="delete-confirmation" role="alertdialog" aria-labelledby="delete-heading">
+              <div>
+                <strong id="delete-heading">Delete this post?</strong>
+                <span>This action cannot be undone.</span>
+              </div>
+              <button
+                className="danger-button"
+                disabled={deletePostMutation.isPending}
+                type="button"
+                onClick={() => void confirmDelete()}
+              >
+                {deletePostMutation.isPending ? 'Deleting…' : 'Confirm delete'}
+              </button>
+              <button
+                className="secondary-button"
+                disabled={deletePostMutation.isPending}
+                type="button"
+                onClick={() => setIsConfirmingDelete(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button className="danger-button" type="button" onClick={() => setIsConfirmingDelete(true)}>
+              Delete post
+            </button>
+          )}
+          {deletePostMutation.isError && (
+            <p className="delete-error" role="alert">
+              {getErrorMessage(deletePostMutation.error, 'delete post')}
+            </p>
+          )}
+        </div>
       </article>
     )
   }

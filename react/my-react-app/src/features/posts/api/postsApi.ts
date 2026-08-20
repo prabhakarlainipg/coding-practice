@@ -26,6 +26,10 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
 
   return postSchema.parse(data)
 }
+
+export async function deletePost(postId: number): Promise<void> {
+  await request<unknown>(`/posts/${postId}`, { method: 'DELETE' })
+}
 /*
 The non-throwing alternative is:
     const result = postSchema.safeParse(data)
