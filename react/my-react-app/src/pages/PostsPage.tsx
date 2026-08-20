@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ZodError } from 'zod'
 import { getPosts } from '../features/posts/api/postsApi'
 import { PostCard } from '../features/posts/components/PostCard'
 import type { Post } from '../features/posts/types/post'
@@ -10,9 +11,21 @@ type PostsState =
   | { status: 'error'; message: string }
 
 function getErrorMessage(error: unknown): string {
+/*
+  server returned an unsuccessful HTTP status
+*/
   if (error instanceof HttpError) {
     return `The posts request failed (${error.status}).`
   }
+/*
+  request succeeded, but its data structure was invalid
+*/
+  if (error instanceof ZodError) {
+    return 'The API returned data in an unexpected format.'
+  }
+/*
+  network or another JavaScript error
+*/
   if (error instanceof Error) return error.message
   return 'An unexpected error occurred.'
 }
