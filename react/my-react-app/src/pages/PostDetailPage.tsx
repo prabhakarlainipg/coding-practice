@@ -11,27 +11,25 @@ function PostDetail({ postId }: { postId: number }) {
   const { data: post, error, isError, isFetching, isPending, refetch } =
     usePost(postId)
 
+  let postContent
+
   if (isPending) {
-    return (
+    postContent = (
       <div className="state-panel" role="status">
         <span className="spinner" aria-hidden="true" />
-        <p>Loading post…</p>
+        <h1 id="post-detail-heading">Loading post…</h1>
       </div>
     )
-  }
-
-  if (isError) {
-    return (
+  } else if (isError) {
+    postContent = (
       <div className="state-panel state-panel--error" role="alert">
         <h1 id="post-detail-heading">We couldn’t load this post</h1>
         <p>{getErrorMessage(error, 'post')}</p>
         <button type="button" onClick={() => void refetch()}>Try again</button>
       </div>
     )
-  }
-
-  return (
-    <>
+  } else {
+    postContent = (
       <article className="post-detail">
         <div className="post-detail__meta">
           <span>Post #{post.id}</span>
@@ -41,6 +39,12 @@ function PostDetail({ postId }: { postId: number }) {
         <h1 id="post-detail-heading">{post.title}</h1>
         <p>{post.body}</p>
       </article>
+    )
+  }
+
+  return (
+    <>
+      {postContent}
       <PostComments postId={postId} />
     </>
   )
