@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { z } from 'zod'
+import { PostComments } from '../features/comments/components/PostComments'
 import { usePost } from '../features/posts/queries/usePosts'
 import { getErrorMessage } from '../lib/getErrorMessage'
 
@@ -30,15 +31,18 @@ function PostDetail({ postId }: { postId: number }) {
   }
 
   return (
-    <article className="post-detail">
-      <div className="post-detail__meta">
-        <span>Post #{post.id}</span>
-        <span>User {post.userId}</span>
-        {isFetching && <span role="status">Refreshing…</span>}
-      </div>
-      <h1 id="post-detail-heading">{post.title}</h1>
-      <p>{post.body}</p>
-    </article>
+    <>
+      <article className="post-detail">
+        <div className="post-detail__meta">
+          <span>Post #{post.id}</span>
+          <span>User {post.userId}</span>
+          {isFetching && <span role="status">Refreshing…</span>}
+        </div>
+        <h1 id="post-detail-heading">{post.title}</h1>
+        <p>{post.body}</p>
+      </article>
+      <PostComments postId={postId} />
+    </>
   )
 }
 
