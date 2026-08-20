@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ZodError } from 'zod'
 import { PostCard } from '../features/posts/components/PostCard'
 import { usePosts } from '../features/posts/queries/usePosts'
@@ -15,8 +17,38 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function PostsPage() {
+  /*Benefits:
+      Search survives page refresh
+  URLs can be bookmarked
+  Search URLs can be shared
+  Browser navigation understands the state
+  Cypress can directly open a filtered view*/
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: posts = [], error, isError, isFetching, isPending, refetch } =
     usePosts()
+  const searchTerm = searchParams.get('q') ?? ''
+
+  const filteredPosts = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLocaleLowerCase()
+
+    if (!normalizedSearch) return posts
+
+    return posts.filter((post) =>
+      `${post.title} ${post.body}`.toLocaleLowerCase().includes(normalizedSearch),
+    )
+  }, [posts, searchTerm])
+
+  function updateSearch(value: string) {
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    if (value) {
+      nextSearchParams.set('q', value)
+    } else {
+      nextSearchParams.delete('q')
+    }
+
+    setSearchParams(nextSearchParams, { replace: true })
+  }
 
   return (
     <section aria-labelledby="posts-heading" className="posts-page">
@@ -29,7 +61,9 @@ export function PostsPage() {
 
         {!isPending && !isError && (
           <div className="page-actions">
-            <span className="result-count">{posts.length} posts</span>
+            <span className="result-count">
+              {filteredPosts.length} of {posts.length} posts
+            </span>
             <button
               className="secondary-button"
               disabled={isFetching}
@@ -41,6 +75,26 @@ export function PostsPage() {
           </div>
         )}
       </div>
+
+      {!isPending && !isError && (
+        <div className="search-bar" role="search">
+          <label htmlFor="post-search">Search posts</label>
+          <div className="search-bar__control">
+            <input
+              id="post-search"
+              type="search"
+              value={searchTerm}
+              placeholder="Search by title or content"
+              onChange={(event) => updateSearch(event.target.value)}
+            />
+            {searchTerm && (
+              <button type="button" onClick={() => updateSearch('')}>
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {isPending && (
         <div className="state-panel" role="status">
@@ -66,9 +120,19 @@ export function PostsPage() {
         </div>
       )}
 
-      {!isPending && !isError && posts.length > 0 && (
+      {!isPending && !isError && posts.length > 0 && filteredPosts.length === 0 && (
+        <div className="state-panel">
+          <h2>No matching posts</h2>
+          <p>Try a different search term or clear the current search.</p>
+          <button type="button" onClick={() => updateSearch('')}>
+            Clear search
+          </button>
+        </div>
+      )}
+
+      {!isPending && !isError && filteredPosts.length > 0 && (
         <div className="posts-grid">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
