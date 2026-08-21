@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
+import { NetworkStatus } from '../components/NetworkStatus'
 import { RouteErrorFallback } from '../components/RouteErrorFallback'
 import { RouteLoading } from '../components/RouteLoading'
 import { ThemeToggle } from '../features/preferences/components/ThemeToggle'
@@ -27,6 +28,7 @@ export function AppLayout() {
           <span>ProjectHub</span>
         </Link>
         <div className="header-actions">
+          <NetworkStatus />
           <ThemeToggle />
           <span className="environment-badge">Development</span>
         </div>
