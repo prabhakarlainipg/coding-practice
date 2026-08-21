@@ -212,11 +212,13 @@
 .todo-filters button[aria-pressed='true'] { color: #4d4fce; background: #fff; box-shadow: 0 1px 4px rgba(23, 34, 55, .1); }
 .filter-pending { align-self: center; padding: 0 7px; color: #7c8699; font-size: 10px; font-weight: 800; }
 .todo-results > p { margin: 0 0 10px; color: #7c8699; font-size: 12px; font-weight: 700; }
-.todos-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.todos-list li { display: grid; grid-template-columns: 25px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 15px 18px; border: 1px solid #e3e8f0; border-radius: 10px; background: #fff; }
+.todos-list { margin: 0; padding: 0; list-style: none; }
+.virtual-todo-row { padding-bottom: 8px; }
+.todo-row-card { height: 100%; display: grid; grid-template-columns: 25px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 15px 18px; border: 1px solid #e3e8f0; border-radius: 10px; background: #fff; }
+.todo-copy { min-width: 0; }
 .todo-check { width: 21px; height: 21px; display: grid; place-items: center; border: 2px solid #c8cfda; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 900; }
 .todo-check--complete { border-color: #159477; background: #159477; }
-.todo-title { display: block; color: #3d485c; font-size: 14px; font-weight: 700; text-transform: capitalize; }
+.todo-title { display: block; overflow: hidden; color: #3d485c; font-size: 14px; font-weight: 700; text-overflow: ellipsis; text-transform: capitalize; white-space: nowrap; }
 .todos-list small { display: block; margin-top: 3px; color: #929bab; font-size: 10px; }
 .todo-status { padding: 5px 8px; border-radius: 999px; color: #935f08; background: #fff4d8; font-size: 10px; font-weight: 800; }
 .todo-status--complete { color: #08785e; background: #e5f7f1; }
@@ -263,7 +265,7 @@
 
 @media (max-width: 520px) {
   .todo-stats { grid-template-columns: 1fr; }
-  .todos-list li { grid-template-columns: 25px minmax(0, 1fr); }
+  .todo-row-card { grid-template-columns: 25px minmax(0, 1fr); }
   .todo-status { grid-column: 2; justify-self: start; }
 }
 
@@ -290,7 +292,7 @@
 :root[data-theme='dark'] .activity-panel,
 :root[data-theme='dark'] .todo-stats > div,
 :root[data-theme='dark'] .todo-toolbar,
-:root[data-theme='dark'] .todos-list li,
+:root[data-theme='dark'] .todo-row-card,
 :root[data-theme='dark'] .route-loading { border-color: #303849; background: #1b202c; box-shadow: none; }
 :root[data-theme='dark'] .modal-dialog { border-color: #3b4354; color: #d7dcea; background: #1b202c; }
 :root[data-theme='dark'] .app-header,
