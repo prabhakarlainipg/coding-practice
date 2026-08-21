@@ -16,6 +16,9 @@
 .navigation__link--active { color: #4d4fce; background: #efefff; }
 .navigation__link:focus-visible, .brand:focus-visible, .text-link:focus-visible { outline: 3px solid rgba(91, 92, 226, .35); outline-offset: 2px; }
 .main-content { padding: 48px; }
+.route-loading { max-width: 1060px; min-height: 280px; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; border: 1px solid #e3e8f0; border-radius: 16px; color: #465166; background: #fff; }
+.route-loading strong { color: #20283a; }
+.route-loading p { margin: 3px 0 0; color: #7c8699; font-size: 13px; }
 .dashboard, .placeholder { max-width: 1060px; margin: 0 auto; }
 .dashboard__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
 .dashboard h1, .placeholder h1 { margin: 8px 0; color: #151b27; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.04em; }

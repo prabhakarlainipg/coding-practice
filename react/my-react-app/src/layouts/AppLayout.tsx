@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
+import { RouteLoading } from '../components/RouteLoading'
 
 /*
 The shared page structure
@@ -37,7 +39,9 @@ export function AppLayout() {
             {/*
           outlet renders currently matched child page, Outlet is the position where React Router renders the matched child page.
 */}
-          <Outlet />
+          <Suspense fallback={<RouteLoading />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

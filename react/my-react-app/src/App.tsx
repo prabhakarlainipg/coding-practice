@@ -1,16 +1,32 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { queryClient } from './app/queryClient'
 import { AppLayout } from './layouts/AppLayout'
-import { CreatePostPage } from './pages/CreatePostPage'
-import { DashboardPage } from './pages/DashboardPage'
-import { NotFoundPage } from './pages/NotFoundPage'
-import { PostDetailPage } from './pages/PostDetailPage'
-import { PostsPage } from './pages/PostsPage'
-import { TodosPage } from './pages/TodosPage'
-import { UsersPage } from './pages/UsersPage'
+
+const DashboardPage = lazy(() =>
+  import('./pages/DashboardPage').then((module) => ({ default: module.DashboardPage })),
+)
+const PostsPage = lazy(() =>
+  import('./pages/PostsPage').then((module) => ({ default: module.PostsPage })),
+)
+const CreatePostPage = lazy(() =>
+  import('./pages/CreatePostPage').then((module) => ({ default: module.CreatePostPage })),
+)
+const PostDetailPage = lazy(() =>
+  import('./pages/PostDetailPage').then((module) => ({ default: module.PostDetailPage })),
+)
+const UsersPage = lazy(() =>
+  import('./pages/UsersPage').then((module) => ({ default: module.UsersPage })),
+)
+const TodosPage = lazy(() =>
+  import('./pages/TodosPage').then((module) => ({ default: module.TodosPage })),
+)
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
+)
 //defines route tree
 const router = createBrowserRouter([
   {
