@@ -18,7 +18,7 @@ const companySchema = z.object({
   catchPhrase: z.string().min(1),
   bs: z.string().min(1),
 })
-
+//nested Zod Schemas
 export const userSchema = z.object({
   id: z.number().int().positive(),
   name: z.string().min(1),
