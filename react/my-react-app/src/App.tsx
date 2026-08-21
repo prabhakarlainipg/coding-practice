@@ -16,6 +16,9 @@ const PostsPage = lazy(() =>
 const CreatePostPage = lazy(() =>
   import('./pages/CreatePostPage').then((module) => ({ default: module.CreatePostPage })),
 )
+const EditPostPage = lazy(() =>
+  import('./pages/EditPostPage').then((module) => ({ default: module.EditPostPage })),
+)
 const PostDetailPage = lazy(() =>
   import('./pages/PostDetailPage').then((module) => ({ default: module.PostDetailPage })),
 )
@@ -43,6 +46,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'posts', element: <PostsPage /> },
       { path: 'posts/new', element: <CreatePostPage /> },
+      { path: 'posts/:postId/edit', element: <EditPostPage /> },
 /*
 :postId is a dynamic route segment.
 */

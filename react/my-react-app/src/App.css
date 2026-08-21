@@ -89,7 +89,7 @@
 .post-detail__meta { display: flex; flex-wrap: wrap; gap: 12px 22px; color: #7c8699; font-size: 12px; font-weight: 800; }
 .post-detail h1 { max-width: 700px; margin: 24px 0 18px; color: #151b27; font-size: clamp(30px, 5vw, 48px); line-height: 1.12; letter-spacing: -.04em; text-transform: capitalize; }
 .post-detail > p { margin: 0; color: #5f6b7e; font-size: 18px; line-height: 1.75; }
-.post-detail__actions { margin-top: 30px; padding-top: 24px; border-top: 1px solid #edf0f5; }
+.post-detail__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 30px; padding-top: 24px; border-top: 1px solid #edf0f5; }
 .danger-button { padding: 9px 14px; border: 1px solid #d64f4f; border-radius: 8px; color: #b42318; background: #fff; font-weight: 800; cursor: pointer; }
 .danger-button:hover:not(:disabled) { color: #fff; background: #b42318; }
 .danger-button:disabled { cursor: wait; opacity: .6; }
@@ -136,8 +136,10 @@
 .post-preview span { display: inline-block; margin-top: 14px; color: #7c8699; font-size: 12px; font-weight: 800; }
 .mutation-message { margin-top: 22px; padding: 22px; border: 1px solid #e3e8f0; border-radius: 12px; background: #fff; }
 .mutation-message--error { border-color: #f2c8c8; background: #fffafa; }
+.mutation-message--success { border-color: #bce4d8; background: #f5fffb; }
 .mutation-message h2, .mutation-message p { margin: 0; }
 .mutation-message h2 { color: #9f2929; font-size: 18px; }
+.mutation-message--success h2 { color: #08785e; }
 .mutation-message p { margin-top: 7px; color: #687386; }
 .users-page { max-width: 1060px; margin: 0 auto; }
 .users-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }

@@ -53,6 +53,9 @@ function PostDetail({ postId }: { postId: number }) {
         <h1 id="post-detail-heading">{post.title}</h1>
         <p>{post.body}</p>
         <div className="post-detail__actions">
+          <Link className="secondary-link" to={`/posts/${postId}/edit`}>
+            Edit post
+          </Link>
           {isConfirmingDelete ? (
             <div className="delete-confirmation" role="alertdialog" aria-labelledby="delete-heading">
               <div>
