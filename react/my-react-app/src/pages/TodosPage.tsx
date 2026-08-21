@@ -1,7 +1,6 @@
-import { useMemo, useReducer } from 'react'
+import { useDeferredValue, useMemo, useReducer, useTransition } from 'react'
 import { useTodos } from '../features/todos/queries/useTodos'
 import { getErrorMessage } from '../lib/getErrorMessage'
-import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type TodoFilter = 'all' | 'active' | 'completed'
@@ -50,15 +49,26 @@ const filters: Array<{ value: TodoFilter; label: string }> = [
 export function TodosPage() {
   useDocumentTitle('Todos | ProjectHub')
   const [viewState, dispatch] = useReducer(todoViewReducer, initialViewState)
+  //React treats it as non-urgent
+  //We initiate the update
+  // React treats it as non-urgent
+  // isPending describes progress
+  const [isFilterPending, startFilterTransition] = useTransition()
   const { data: todos = [], error, isError, isFetching, isPending, refetch } =
     useTodos()
-  const debouncedSearch = useDebouncedValue(viewState.search)
+/* Urgent render
+├── Input displays "react"
+└── Results can temporarily use ""
+
+Deferred render
+└── Results update using "react"*/
+  const deferredSearch = useDeferredValue(viewState.search)
 
   const completedCount = todos.filter((todo) => todo.completed).length
   const activeCount = todos.length - completedCount
 
   const visibleTodos = useMemo(() => {
-    const normalizedSearch = debouncedSearch.trim().toLocaleLowerCase()
+    const normalizedSearch = deferredSearch.trim().toLocaleLowerCase()
 
     return todos.filter((todo) => {
       const matchesStatus =
@@ -70,7 +80,7 @@ export function TodosPage() {
 
       return matchesStatus && matchesSearch
     })
-  }, [todos, debouncedSearch, viewState.filter])
+  }, [todos, deferredSearch, viewState.filter])
 
   const hasActiveFilters = viewState.filter !== 'all' || viewState.search !== ''
 
@@ -109,21 +119,28 @@ export function TodosPage() {
                   dispatch({ type: 'searchChanged', search: event.target.value })
                 }
               />
-              {viewState.search !== debouncedSearch && (
+              {viewState.search !== deferredSearch && (
                 <p className="search-pending" role="status">Updating results…</p>
               )}
             </div>
-            <div className="todo-filters" aria-label="Filter todos">
+            <div className="todo-filters" aria-label="Filter todos" aria-busy={isFilterPending}>
               {filters.map((filter) => (
                 <button
                   key={filter.value}
                   type="button"
                   aria-pressed={viewState.filter === filter.value}
-                  onClick={() => dispatch({ type: 'filterChanged', filter: filter.value })}
+                  onClick={() =>
+                      ////We initiate the update
+                      //   // React treats it as non-urgent
+                    startFilterTransition(() =>
+                      dispatch({ type: 'filterChanged', filter: filter.value }),
+                    )
+                  }
                 >
                   {filter.label}
                 </button>
               ))}
+              {isFilterPending && <span className="filter-pending" role="status">Updating…</span>}
             </div>
             <button
               className="secondary-button"
