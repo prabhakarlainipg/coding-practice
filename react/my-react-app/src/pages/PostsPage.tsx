@@ -5,6 +5,7 @@ import { usePosts } from '../features/posts/queries/usePosts'
 import { getErrorMessage } from '../lib/getErrorMessage'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useAuth } from '../features/auth/hooks/useAuth'
 
 const PAGE_SIZE = 10
 const sortOptions = ['newest', 'oldest', 'title'] as const
@@ -21,6 +22,8 @@ function getPageNumber(value: string | null): number {
 
 export function PostsPage() {
   useDocumentTitle('Posts | ProjectHub')
+  const { user } = useAuth()
+  const canManagePosts = user?.role === 'admin'
   /*Benefits:
       Search survives page refresh
   URLs can be bookmarked
@@ -112,7 +115,9 @@ export function PostsPage() {
             >
               {isFetching ? 'Refreshing…' : 'Refresh'}
             </button>
-            <Link className="primary-link" to="/posts/new">Create post</Link>
+            {canManagePosts && (
+              <Link className="primary-link" to="/posts/new">Create post</Link>
+            )}
           </div>
         )}
       </div>

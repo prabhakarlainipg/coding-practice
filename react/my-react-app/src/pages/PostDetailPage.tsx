@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { z } from 'zod'
 import { AccessibleModal } from '../components/AccessibleModal'
+import { useAuth } from '../features/auth/hooks/useAuth'
 import { PostComments } from '../features/comments/components/PostComments'
 import { useDeletePost } from '../features/posts/mutations/useDeletePost'
 import { usePost } from '../features/posts/queries/usePosts'
@@ -12,6 +13,8 @@ const postIdSchema = z.coerce.number().int().positive()
 
 function PostDetail({ postId }: { postId: number }) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+  const { user } = useAuth()
+  const canManagePosts = user?.role === 'admin'
   const navigate = useNavigate()
   const deletePostMutation = useDeletePost()
   const { data: post, error, isError, isFetching, isPending, refetch } =
@@ -57,47 +60,51 @@ function PostDetail({ postId }: { postId: number }) {
         </div>
         <h1 id="post-detail-heading">{post.title}</h1>
         <p>{post.body}</p>
-        <div className="post-detail__actions">
-          <Link className="secondary-link" to={`/posts/${postId}/edit`}>
-            Edit post
-          </Link>
-          <button className="danger-button" type="button" onClick={() => setIsConfirmingDelete(true)}>
-            Delete post
-          </button>
-        </div>
+        {canManagePosts && (
+          <>
+            <div className="post-detail__actions">
+              <Link className="secondary-link" to={`/posts/${postId}/edit`}>
+                Edit post
+              </Link>
+              <button className="danger-button" type="button" onClick={() => setIsConfirmingDelete(true)}>
+                Delete post
+              </button>
+            </div>
 
-        <AccessibleModal
-          isOpen={isConfirmingDelete}
-          title="Delete this post?"
-          isDismissible={!deletePostMutation.isPending}
-          onClose={closeDeleteModal}
-        >
-          <p>This action cannot be undone. The post will be removed from the local cache.</p>
-          {deletePostMutation.isError && (
-            <p className="delete-error" role="alert">
-              {getErrorMessage(deletePostMutation.error, 'delete post')}
-            </p>
-          )}
-          <div className="modal-actions">
-            <button
-              className="danger-button"
-              data-autofocus
-              disabled={deletePostMutation.isPending}
-              type="button"
-              onClick={() => void confirmDelete()}
+            <AccessibleModal
+              isOpen={isConfirmingDelete}
+              title="Delete this post?"
+              isDismissible={!deletePostMutation.isPending}
+              onClose={closeDeleteModal}
             >
-              {deletePostMutation.isPending ? 'Deleting…' : 'Confirm delete'}
-            </button>
-            <button
-              className="secondary-button"
-              disabled={deletePostMutation.isPending}
-              type="button"
-              onClick={closeDeleteModal}
-            >
-              Cancel
-            </button>
-          </div>
-        </AccessibleModal>
+              <p>This action cannot be undone. The post will be removed from the local cache.</p>
+              {deletePostMutation.isError && (
+                <p className="delete-error" role="alert">
+                  {getErrorMessage(deletePostMutation.error, 'delete post')}
+                </p>
+              )}
+              <div className="modal-actions">
+                <button
+                  className="danger-button"
+                  data-autofocus
+                  disabled={deletePostMutation.isPending}
+                  type="button"
+                  onClick={() => void confirmDelete()}
+                >
+                  {deletePostMutation.isPending ? 'Deleting…' : 'Confirm delete'}
+                </button>
+                <button
+                  className="secondary-button"
+                  disabled={deletePostMutation.isPending}
+                  type="button"
+                  onClick={closeDeleteModal}
+                >
+                  Cancel
+                </button>
+              </div>
+            </AccessibleModal>
+          </>
+        )}
       </article>
     )
   }

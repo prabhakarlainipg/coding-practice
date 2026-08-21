@@ -50,6 +50,7 @@
 .route-error details { margin-top: 22px; padding: 12px; border-radius: 8px; background: #f7eaea; }
 .route-error summary { color: #725f5f; font-size: 13px; font-weight: 800; cursor: pointer; }
 .route-error code { display: block; margin-top: 10px; overflow-wrap: anywhere; color: #8e211a; font-size: 12px; }
+.authorization-error code { display: inline; margin: 0; }
 .route-error__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .secondary-link { display: inline-flex; align-items: center; justify-content: center; padding: 8px 13px; border: 1px solid #d8ddeb; border-radius: 8px; color: #465166; background: #fff; font-size: 13px; font-weight: 800; text-decoration: none; }
 .secondary-link:hover { border-color: #5b5ce2; color: #4d4fce; }

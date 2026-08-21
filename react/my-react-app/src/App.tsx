@@ -6,6 +6,7 @@ import './App.css'
 import { queryClient } from './app/queryClient'
 import { AuthProvider } from './features/auth/context/AuthProvider'
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute'
+import { RequireRole } from './features/auth/components/RequireRole'
 import { PreferencesProvider } from './features/preferences/context/PreferencesProvider'
 import { AppLayout } from './layouts/AppLayout'
 
@@ -36,6 +37,9 @@ const TodosPage = lazy(() =>
 const LoginPage = lazy(() =>
   import('./pages/LoginPage').then((module) => ({ default: module.LoginPage })),
 )
+const UnauthorizedPage = lazy(() =>
+  import('./pages/UnauthorizedPage').then((module) => ({ default: module.UnauthorizedPage })),
+)
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
 )
@@ -57,8 +61,13 @@ const router = createBrowserRouter([
 */
           { index: true, element: <DashboardPage /> },
           { path: 'posts', element: <PostsPage /> },
-          { path: 'posts/new', element: <CreatePostPage /> },
-          { path: 'posts/:postId/edit', element: <EditPostPage /> },
+          {
+            element: <RequireRole allowedRoles={['admin']} />,
+            children: [
+              { path: 'posts/new', element: <CreatePostPage /> },
+              { path: 'posts/:postId/edit', element: <EditPostPage /> },
+            ],
+          },
 /*
 :postId is a dynamic route segment.
 */
@@ -66,6 +75,7 @@ const router = createBrowserRouter([
           { path: 'users', element: <UsersPage /> },
           { path: 'users/:userId', element: <UserDetailPage /> },
           { path: 'todos', element: <TodosPage /> },
+          { path: 'unauthorized', element: <UnauthorizedPage /> },
 /*
       path: '*' catches unknown URLs.
 */

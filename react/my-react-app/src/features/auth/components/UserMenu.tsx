@@ -9,7 +9,7 @@ export function UserMenu() {
 
   return (
     <div className="user-menu">
-      <span title={user.email}>{user.name}</span>
+      <span title={user.email}>{user.name} · {user.role}</span>
       <button type="button" onClick={logout}>Log out</button>
     </div>
   )
