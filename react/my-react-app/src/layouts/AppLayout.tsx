@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
 import { RouteErrorFallback } from '../components/RouteErrorFallback'
 import { RouteLoading } from '../components/RouteLoading'
+import { ThemeToggle } from '../features/preferences/components/ThemeToggle'
 
 /*
 The shared page structure
@@ -25,7 +26,10 @@ export function AppLayout() {
           <span className="brand__mark">PH</span>
           <span>ProjectHub</span>
         </Link>
-        <span className="environment-badge">Development</span>
+        <div className="header-actions">
+          <ThemeToggle />
+          <span className="environment-badge">Development</span>
+        </div>
       </header>
       <div className="app-layout">
 {/*

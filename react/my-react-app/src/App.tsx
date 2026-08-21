@@ -4,6 +4,7 @@ import { lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { queryClient } from './app/queryClient'
+import { PreferencesProvider } from './features/preferences/context/PreferencesProvider'
 import { AppLayout } from './layouts/AppLayout'
 
 const DashboardPage = lazy(() =>
@@ -60,10 +61,12 @@ const router = createBrowserRouter([
 function App() {
   //connects router to react
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-    </QueryClientProvider>
+    <PreferencesProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+      </QueryClientProvider>
+    </PreferencesProvider>
   )
 }
 

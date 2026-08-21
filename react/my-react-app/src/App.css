@@ -4,6 +4,10 @@
 .brand__mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; color: #fff; background: #5b5ce2; font-size: 13px; letter-spacing: .04em; }
 .environment-badge, .status { border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; }
 .environment-badge { color: #5b5ce2; background: #efefff; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid #d8ddeb; border-radius: 8px; color: #465166; background: #fff; font-size: 12px; font-weight: 800; cursor: pointer; }
+.theme-toggle:hover { border-color: #5b5ce2; color: #4d4fce; }
+.theme-toggle:focus-visible { outline: 3px solid rgba(91, 92, 226, .35); outline-offset: 2px; }
 .app-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: calc(100vh - 73px); }
 .sidebar { padding: 30px 18px; background: #fff; border-right: 1px solid #e3e8f0; }
 .sidebar__label, .eyebrow { margin: 0; color: #7c8699; font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
@@ -256,3 +260,45 @@
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation-duration: 1.6s; }
 }
+
+:root[data-theme='dark'] body,
+:root[data-theme='dark'] .app-shell { color: #d7dcea; background: #121620; }
+:root[data-theme='dark'] .app-header,
+:root[data-theme='dark'] .sidebar,
+:root[data-theme='dark'] .feature-card,
+:root[data-theme='dark'] .placeholder,
+:root[data-theme='dark'] .post-card,
+:root[data-theme='dark'] .state-panel,
+:root[data-theme='dark'] .search-bar,
+:root[data-theme='dark'] .filter-bar,
+:root[data-theme='dark'] .post-detail,
+:root[data-theme='dark'] .comments,
+:root[data-theme='dark'] .form-card,
+:root[data-theme='dark'] .post-preview,
+:root[data-theme='dark'] .user-card,
+:root[data-theme='dark'] .user-profile,
+:root[data-theme='dark'] .activity-panel,
+:root[data-theme='dark'] .todo-stats > div,
+:root[data-theme='dark'] .todo-toolbar,
+:root[data-theme='dark'] .todos-list li,
+:root[data-theme='dark'] .route-loading { border-color: #303849; background: #1b202c; box-shadow: none; }
+:root[data-theme='dark'] .app-header,
+:root[data-theme='dark'] .sidebar { border-color: #303849; }
+:root[data-theme='dark'] h1,
+:root[data-theme='dark'] h2,
+:root[data-theme='dark'] h3,
+:root[data-theme='dark'] .brand,
+:root[data-theme='dark'] .todo-title,
+:root[data-theme='dark'] .user-card__details dd { color: #edf0f7; }
+:root[data-theme='dark'] p,
+:root[data-theme='dark'] dd,
+:root[data-theme='dark'] address { color: #aeb6c7; }
+:root[data-theme='dark'] .navigation__link { color: #b9c0cf; }
+:root[data-theme='dark'] .navigation__link:hover,
+:root[data-theme='dark'] .navigation__link--active { color: #c8c9ff; background: #292b48; }
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] textarea,
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] .secondary-button,
+:root[data-theme='dark'] .theme-toggle { border-color: #3b4354; color: #d7dcea; background: #242a37; }
+:root[data-theme='dark'] .profile-grid section { background: #242a37; }
