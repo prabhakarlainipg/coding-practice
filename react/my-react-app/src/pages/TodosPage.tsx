@@ -1,9 +1,10 @@
-import { useDeferredValue, useMemo, useReducer, useTransition } from 'react'
+import { useCallback, useDeferredValue, useMemo, useReducer, useTransition } from 'react'
+import { TodoFilters } from '../features/todos/components/TodoFilters'
+import { TodoList } from '../features/todos/components/TodoList'
 import { useTodos } from '../features/todos/queries/useTodos'
+import type { TodoFilter } from '../features/todos/types/todo'
 import { getErrorMessage } from '../lib/getErrorMessage'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-
-type TodoFilter = 'all' | 'active' | 'completed'
 
 type TodoViewState = {
   filter: TodoFilter
@@ -39,12 +40,6 @@ function todoViewReducer(
       return assertNever(action)
   }
 }
-
-const filters: Array<{ value: TodoFilter; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'active', label: 'Active' },
-  { value: 'completed', label: 'Completed' },
-]
 
 export function TodosPage() {
   useDocumentTitle('Todos | ProjectHub')
@@ -83,6 +78,22 @@ Deferred render
   }, [todos, deferredSearch, viewState.filter])
 
   const hasActiveFilters = viewState.filter !== 'all' || viewState.search !== ''
+
+/*  When useCallback is useful
+  Useful when the function is:
+  Passed to a memoized child
+  Used as an effect dependency
+  Used as another hook dependency
+  Registered with an external subscription requiring stable identity*/
+
+  const handleFilterChange = useCallback(
+    (filter: TodoFilter) => {
+      startFilterTransition(() => {
+        dispatch({ type: 'filterChanged', filter })
+      })
+    },
+    [startFilterTransition],
+  )
 
   return (
     <section className="todos-page" aria-labelledby="todos-heading">
@@ -123,25 +134,11 @@ Deferred render
                 <p className="search-pending" role="status">Updating results…</p>
               )}
             </div>
-            <div className="todo-filters" aria-label="Filter todos" aria-busy={isFilterPending}>
-              {filters.map((filter) => (
-                <button
-                  key={filter.value}
-                  type="button"
-                  aria-pressed={viewState.filter === filter.value}
-                  onClick={() =>
-                      ////We initiate the update
-                      //   // React treats it as non-urgent
-                    startFilterTransition(() =>
-                      dispatch({ type: 'filterChanged', filter: filter.value }),
-                    )
-                  }
-                >
-                  {filter.label}
-                </button>
-              ))}
-              {isFilterPending && <span className="filter-pending" role="status">Updating…</span>}
-            </div>
+            <TodoFilters
+              activeFilter={viewState.filter}
+              isPending={isFilterPending}
+              onFilterChange={handleFilterChange}
+            />
             <button
               className="secondary-button"
               disabled={!hasActiveFilters}
@@ -182,22 +179,7 @@ Deferred render
       {!isPending && !isError && visibleTodos.length > 0 && (
         <div className="todo-results">
           <p aria-live="polite">Showing {visibleTodos.length} of {todos.length} todos</p>
-          <ul className="todos-list">
-            {visibleTodos.map((todo) => (
-              <li key={todo.id}>
-                <span className={todo.completed ? 'todo-check todo-check--complete' : 'todo-check'} aria-hidden="true">
-                  {todo.completed ? '✓' : ''}
-                </span>
-                <div>
-                  <span className="todo-title">{todo.title}</span>
-                  <small>User {todo.userId} · Todo #{todo.id}</small>
-                </div>
-                <span className={todo.completed ? 'todo-status todo-status--complete' : 'todo-status'}>
-                  {todo.completed ? 'Completed' : 'Active'}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <TodoList todos={visibleTodos} />
         </div>
       )}
     </section>

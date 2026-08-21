@@ -10,3 +10,4 @@ export const todoSchema = z.object({
 export const todosSchema = z.array(todoSchema)
 
 export type Todo = z.infer<typeof todoSchema>
+export type TodoFilter = 'all' | 'active' | 'completed'
