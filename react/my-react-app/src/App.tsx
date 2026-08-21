@@ -4,6 +4,7 @@ import { lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { queryClient } from './app/queryClient'
+import { AuthProvider } from './features/auth/context/AuthProvider'
 import { PreferencesProvider } from './features/preferences/context/PreferencesProvider'
 import { AppLayout } from './layouts/AppLayout'
 
@@ -65,12 +66,14 @@ const router = createBrowserRouter([
 function App() {
   //connects router to react
   return (
-    <PreferencesProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-      </QueryClientProvider>
-    </PreferencesProvider>
+    <AuthProvider>
+      <PreferencesProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        </QueryClientProvider>
+      </PreferencesProvider>
+    </AuthProvider>
   )
 }
 
