@@ -3,6 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { PostCard } from '../features/posts/components/PostCard'
 import { usePosts } from '../features/posts/queries/usePosts'
 import { getErrorMessage } from '../lib/getErrorMessage'
+import { useDebouncedValue } from '../hooks/useDebouncedValue'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const PAGE_SIZE = 10
 const sortOptions = ['newest', 'oldest', 'title'] as const
@@ -18,6 +20,7 @@ function getPageNumber(value: string | null): number {
 }
 
 export function PostsPage() {
+  useDocumentTitle('Posts | ProjectHub')
   /*Benefits:
       Search survives page refresh
   URLs can be bookmarked
@@ -28,12 +31,13 @@ export function PostsPage() {
   const { data: posts = [], error, isError, isFetching, isPending, refetch } =
     usePosts()
   const searchTerm = searchParams.get('q') ?? ''
+  const debouncedSearchTerm = useDebouncedValue(searchTerm)
   const sortParam = searchParams.get('sort')
   const sort: SortOption = isSortOption(sortParam) ? sortParam : 'newest'
   const requestedPage = getPageNumber(searchParams.get('page'))
 
   const sortedPosts = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLocaleLowerCase()
+    const normalizedSearch = debouncedSearchTerm.trim().toLocaleLowerCase()
     const matchingPosts = normalizedSearch
       ? posts.filter((post) =>
           `${post.title} ${post.body}`
@@ -47,7 +51,7 @@ export function PostsPage() {
       if (sort === 'oldest') return firstPost.id - secondPost.id
       return secondPost.id - firstPost.id
     })
-  }, [posts, searchTerm, sort])
+  }, [posts, debouncedSearchTerm, sort])
 
   const totalPages = Math.max(1, Math.ceil(sortedPosts.length / PAGE_SIZE))
   const currentPage = Math.min(requestedPage, totalPages)
@@ -131,6 +135,9 @@ export function PostsPage() {
                 </button>
               )}
             </div>
+            {searchTerm !== debouncedSearchTerm && (
+              <p className="search-pending" role="status">Updating results…</p>
+            )}
           </div>
           <div className="sort-control">
             <label htmlFor="post-sort">Sort posts</label>

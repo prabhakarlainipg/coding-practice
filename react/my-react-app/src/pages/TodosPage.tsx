@@ -1,6 +1,8 @@
 import { useMemo, useReducer } from 'react'
 import { useTodos } from '../features/todos/queries/useTodos'
 import { getErrorMessage } from '../lib/getErrorMessage'
+import { useDebouncedValue } from '../hooks/useDebouncedValue'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 type TodoFilter = 'all' | 'active' | 'completed'
 
@@ -46,15 +48,17 @@ const filters: Array<{ value: TodoFilter; label: string }> = [
 ]
 
 export function TodosPage() {
+  useDocumentTitle('Todos | ProjectHub')
   const [viewState, dispatch] = useReducer(todoViewReducer, initialViewState)
   const { data: todos = [], error, isError, isFetching, isPending, refetch } =
     useTodos()
+  const debouncedSearch = useDebouncedValue(viewState.search)
 
   const completedCount = todos.filter((todo) => todo.completed).length
   const activeCount = todos.length - completedCount
 
   const visibleTodos = useMemo(() => {
-    const normalizedSearch = viewState.search.trim().toLocaleLowerCase()
+    const normalizedSearch = debouncedSearch.trim().toLocaleLowerCase()
 
     return todos.filter((todo) => {
       const matchesStatus =
@@ -66,7 +70,7 @@ export function TodosPage() {
 
       return matchesStatus && matchesSearch
     })
-  }, [todos, viewState])
+  }, [todos, debouncedSearch, viewState.filter])
 
   const hasActiveFilters = viewState.filter !== 'all' || viewState.search !== ''
 
@@ -105,6 +109,9 @@ export function TodosPage() {
                   dispatch({ type: 'searchChanged', search: event.target.value })
                 }
               />
+              {viewState.search !== debouncedSearch && (
+                <p className="search-pending" role="status">Updating results…</p>
+              )}
             </div>
             <div className="todo-filters" aria-label="Filter todos">
               {filters.map((filter) => (
