@@ -1,12 +1,16 @@
 import { Suspense } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
+import { RouteErrorFallback } from '../components/RouteErrorFallback'
 import { RouteLoading } from '../components/RouteLoading'
 
 /*
 The shared page structure
 */
 export function AppLayout() {
+  const location = useLocation()
+
   return (
     <div className="app-shell">
 {/*
@@ -39,9 +43,22 @@ export function AppLayout() {
             {/*
           outlet renders currently matched child page, Outlet is the position where React Router renders the matched child page.
 */}
-          <Suspense fallback={<RouteLoading />}>
-            <Outlet />
-          </Suspense>
+         {/* Suspense       → component is waiting
+          ErrorBoundary  → component threw an error
+          TanStack Query → API request states*/}
+
+         {/* Lazy import -> A lazy import returns a Promise:
+          ├── Pending  → Suspense fallback
+          ├── Resolved → Render page
+          └── Rejected → Nearest ErrorBoundary fallback*/}
+          <ErrorBoundary
+            FallbackComponent={RouteErrorFallback}
+            resetKeys={[location.pathname]}
+          >
+            <Suspense fallback={<RouteLoading />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
     </div>
