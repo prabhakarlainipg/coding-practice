@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deletePost } from '../api/postsApi'
 import { postKeys } from '../queries/usePosts'
 import type { Post } from '../types/post'
+import { useToast } from '../../notifications/hooks/useToast'
+import { getErrorMessage } from '../../../lib/getErrorMessage'
 
 type DeletePostContext = {
   previousPosts: Post[] | undefined
@@ -9,6 +11,7 @@ type DeletePostContext = {
 
 export function useDeletePost() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation<void, Error, number, DeletePostContext>({
     //deletes post
@@ -30,10 +33,23 @@ export function useDeletePost() {
 
       return { previousPosts }
     },
-    onError: (_error, _postId, context) => {
+    onError: (error, _postId, context) => {
       if (context?.previousPosts) {
         queryClient.setQueryData(postKeys.lists(), context.previousPosts)
       }
+      showToast({
+        title: 'Deletion failed',
+        message: getErrorMessage(error, 'delete post'),
+        variant: 'error',
+      })
+    },
+    onSuccess: (_data, postId) => {
+      queryClient.removeQueries({ queryKey: postKeys.detail(postId) })
+      showToast({
+        title: 'Post deleted',
+        message: `Post #${postId} was removed successfully.`,
+        variant: 'success',
+      })
     },
   })
 }

@@ -7,6 +7,8 @@ import { queryClient } from './app/queryClient'
 import { AuthProvider } from './features/auth/context/AuthProvider'
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute'
 import { RequireRole } from './features/auth/components/RequireRole'
+import { ToastViewport } from './features/notifications/components/ToastViewport'
+import { ToastProvider } from './features/notifications/context/ToastProvider'
 import { PreferencesProvider } from './features/preferences/context/PreferencesProvider'
 import { AppLayout } from './layouts/AppLayout'
 
@@ -90,12 +92,15 @@ function App() {
   //connects router to react
   return (
     <AuthProvider>
-      <PreferencesProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-        </QueryClientProvider>
-      </PreferencesProvider>
+      <ToastProvider>
+        <PreferencesProvider>
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+            <ToastViewport />
+            {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+          </QueryClientProvider>
+        </PreferencesProvider>
+      </ToastProvider>
     </AuthProvider>
   )
 }

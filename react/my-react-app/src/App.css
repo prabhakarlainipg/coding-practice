@@ -29,6 +29,15 @@
 .network-status--offline { color: #9f2929; }
 .network-status--offline > span { background: #c94a4a; box-shadow: 0 0 0 3px rgba(201, 74, 74, .13); }
 .offline-banner { position: fixed; z-index: 900; right: 20px; bottom: 20px; max-width: 390px; padding: 13px 16px; border: 1px solid #efb8b8; border-radius: 10px; color: #812520; background: #fff3f3; box-shadow: 0 12px 30px rgba(80, 25, 25, .15); font-size: 12px; font-weight: 700; line-height: 1.5; }
+.toast-viewport { position: fixed; z-index: 1100; top: 88px; right: 20px; width: min(390px, calc(100vw - 40px)); display: grid; gap: 10px; }
+.toast { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding: 15px 16px; border: 1px solid #d8ddeb; border-left-width: 4px; border-radius: 10px; color: #303a4d; background: #fff; box-shadow: 0 14px 35px rgba(23, 34, 55, .15); }
+.toast--success { border-left-color: #159477; }
+.toast--error { border-left-color: #c94a4a; }
+.toast--info { border-left-color: #5b5ce2; }
+.toast strong { display: block; font-size: 13px; }
+.toast p { margin: 4px 0 0; color: #687386; font-size: 12px; line-height: 1.45; }
+.toast button { align-self: start; padding: 0 3px; border: 0; color: #7c8699; background: transparent; font-size: 21px; line-height: 1; cursor: pointer; }
+.toast button:focus-visible { outline: 3px solid rgba(91, 92, 226, .35); outline-offset: 2px; }
 .app-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: calc(100vh - 73px); }
 .sidebar { padding: 30px 18px; background: #fff; border-right: 1px solid #e3e8f0; }
 .sidebar__label, .eyebrow { margin: 0; color: #7c8699; font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }

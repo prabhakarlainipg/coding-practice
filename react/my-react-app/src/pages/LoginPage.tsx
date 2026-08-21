@@ -76,7 +76,10 @@ export function LoginPage() {
                 {errors.email.message}
               </p>
             ) : (
-              <small id="login-email-help">Try: Sincere@april.biz</small>
+                <>
+              <small id="login-email-help">Admin: Sincere@april.biz</small>
+              <small id="login-email-help">Member: Shanna@melissa.tv</small>
+              </>
             )}
           </div>
 
