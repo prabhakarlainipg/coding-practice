@@ -9,6 +9,14 @@ export async function getPosts(signal?: AbortSignal): Promise<Post[]> {
   return postsSchema.parse(data)
 }
 
+export async function getPostsByUserId(
+  userId: number,
+  signal?: AbortSignal,
+): Promise<Post[]> {
+  const data = await request<unknown>(`/users/${userId}/posts`, { signal })
+  return postsSchema.parse(data)
+}
+
 export async function getPostById(
   postId: number,
   signal?: AbortSignal,

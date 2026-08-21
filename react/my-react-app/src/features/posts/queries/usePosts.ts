@@ -1,10 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getPostById, getPosts } from '../api/postsApi'
+import { getPostById, getPosts, getPostsByUserId } from '../api/postsApi'
 import type { Post } from '../types/post'
 
 export const postKeys = {
   all: ['posts'] as const,
   lists: () => [...postKeys.all, 'list'] as const,
+  byUser: (userId: number) => [...postKeys.lists(), 'user', userId] as const,
   details: () => [...postKeys.all, 'detail'] as const,
   detail: (postId: number) => [...postKeys.details(), postId] as const,
 }
@@ -37,5 +38,12 @@ export function usePosts() {
   return useQuery({
     queryKey: postKeys.lists(),
     queryFn: ({ signal }) => getPosts(signal),
+  })
+}
+
+export function useUserPosts(userId: number) {
+  return useQuery({
+    queryKey: postKeys.byUser(userId),
+    queryFn: ({ signal }) => getPostsByUserId(userId, signal),
   })
 }

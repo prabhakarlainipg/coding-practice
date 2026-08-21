@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { z } from 'zod'
+import { UserActivity } from '../features/users/components/UserActivity'
 import { useUser } from '../features/users/queries/useUsers'
 import { getErrorMessage } from '../lib/getErrorMessage'
 
@@ -82,7 +83,10 @@ export function UserDetailPage() {
     <section className="user-detail-page" aria-labelledby="user-detail-heading">
       <Link className="back-link" to="/users">← Back to users</Link>
       {parsedUserId.success ? (
-        <UserProfile userId={parsedUserId.data} />
+        <>
+          <UserProfile userId={parsedUserId.data} />
+          <UserActivity userId={parsedUserId.data} />
+        </>
       ) : (
         <div className="state-panel state-panel--error" role="alert">
           <h1 id="user-detail-heading">Invalid user address</h1>
