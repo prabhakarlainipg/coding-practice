@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { queryClient } from './app/queryClient'
 import { AuthProvider } from './features/auth/context/AuthProvider'
+import { ProtectedRoute } from './features/auth/components/ProtectedRoute'
 import { PreferencesProvider } from './features/preferences/context/PreferencesProvider'
 import { AppLayout } from './layouts/AppLayout'
 
@@ -32,33 +33,45 @@ const UserDetailPage = lazy(() =>
 const TodosPage = lazy(() =>
   import('./pages/TodosPage').then((module) => ({ default: module.TodosPage })),
 )
+const LoginPage = lazy(() =>
+  import('./pages/LoginPage').then((module) => ({ default: module.LoginPage })),
+)
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
 )
 //defines route tree
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <AppLayout />,
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    element: <ProtectedRoute />,
     children: [
+      {
+        path: '/',
+        element: <AppLayout />,
+        children: [
 /*
       index: true makes Dashboard the default child route.
 */
-      { index: true, element: <DashboardPage /> },
-      { path: 'posts', element: <PostsPage /> },
-      { path: 'posts/new', element: <CreatePostPage /> },
-      { path: 'posts/:postId/edit', element: <EditPostPage /> },
+          { index: true, element: <DashboardPage /> },
+          { path: 'posts', element: <PostsPage /> },
+          { path: 'posts/new', element: <CreatePostPage /> },
+          { path: 'posts/:postId/edit', element: <EditPostPage /> },
 /*
 :postId is a dynamic route segment.
 */
-      { path: 'posts/:postId', element: <PostDetailPage /> },
-      { path: 'users', element: <UsersPage /> },
-      { path: 'users/:userId', element: <UserDetailPage /> },
-      { path: 'todos', element: <TodosPage /> },
+          { path: 'posts/:postId', element: <PostDetailPage /> },
+          { path: 'users', element: <UsersPage /> },
+          { path: 'users/:userId', element: <UserDetailPage /> },
+          { path: 'todos', element: <TodosPage /> },
 /*
       path: '*' catches unknown URLs.
 */
-      { path: '*', element: <NotFoundPage /> },
+          { path: '*', element: <NotFoundPage /> },
+        ],
+      },
     ],
   },
 ])

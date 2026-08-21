@@ -5,6 +5,7 @@ import { Navigation } from '../components/Navigation'
 import { NetworkStatus } from '../components/NetworkStatus'
 import { RouteErrorFallback } from '../components/RouteErrorFallback'
 import { RouteLoading } from '../components/RouteLoading'
+import { UserMenu } from '../features/auth/components/UserMenu'
 import { ThemeToggle } from '../features/preferences/components/ThemeToggle'
 
 /*
@@ -30,6 +31,7 @@ export function AppLayout() {
         <div className="header-actions">
           <NetworkStatus />
           <ThemeToggle />
+          <UserMenu />
           <span className="environment-badge">Development</span>
         </div>
       </header>
