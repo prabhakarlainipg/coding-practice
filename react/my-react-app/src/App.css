@@ -135,6 +135,21 @@
 .mutation-message h2, .mutation-message p { margin: 0; }
 .mutation-message h2 { color: #9f2929; font-size: 18px; }
 .mutation-message p { margin-top: 7px; color: #687386; }
+.users-page { max-width: 1060px; margin: 0 auto; }
+.users-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.user-card { padding: 24px; border: 1px solid #e3e8f0; border-radius: 16px; background: #fff; box-shadow: 0 12px 30px rgba(23, 34, 55, .05); }
+.user-card__header { display: flex; align-items: center; gap: 14px; }
+.user-card__avatar { display: grid; width: 46px; height: 46px; flex: 0 0 auto; place-items: center; border-radius: 13px; color: #4d4fce; background: #efefff; font-size: 13px; font-weight: 900; }
+.user-card__header h2 { margin: 0; color: #20283a; font-size: 18px; }
+.user-card__header p { margin: 3px 0 0; color: #8992a3; font-size: 12px; }
+.user-card__details { display: grid; gap: 12px; margin: 22px 0; }
+.user-card__details > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; }
+.user-card__details dt { color: #8992a3; font-size: 12px; font-weight: 700; }
+.user-card__details dd { margin: 0; color: #465166; font-size: 13px; }
+.user-card__links { display: flex; gap: 9px; padding-top: 18px; border-top: 1px solid #edf0f5; }
+.user-card__links a { padding: 7px 11px; border-radius: 7px; color: #4d4fce; background: #f1f1ff; font-size: 12px; font-weight: 800; text-decoration: none; }
+.user-card__links a:hover { background: #e5e5ff; }
+.user-card__links a:focus-visible { outline: 3px solid rgba(91, 92, 226, .35); outline-offset: 2px; }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 26px; }
 .pagination span { color: #687386; font-size: 13px; font-weight: 700; }
 .pagination button { padding: 9px 14px; border: 1px solid #d8ddeb; border-radius: 8px; color: #4d4fce; background: #fff; font-weight: 800; cursor: pointer; }
@@ -167,6 +182,7 @@
   .posts-grid { grid-template-columns: 1fr; }
   .filter-bar { grid-template-columns: 1fr; }
   .form-card__heading { display: grid; }
+  .users-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
