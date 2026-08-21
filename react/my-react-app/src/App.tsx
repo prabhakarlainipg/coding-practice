@@ -21,6 +21,9 @@ const PostDetailPage = lazy(() =>
 const UsersPage = lazy(() =>
   import('./pages/UsersPage').then((module) => ({ default: module.UsersPage })),
 )
+const UserDetailPage = lazy(() =>
+  import('./pages/UserDetailPage').then((module) => ({ default: module.UserDetailPage })),
+)
 const TodosPage = lazy(() =>
   import('./pages/TodosPage').then((module) => ({ default: module.TodosPage })),
 )
@@ -44,6 +47,7 @@ const router = createBrowserRouter([
 */
       { path: 'posts/:postId', element: <PostDetailPage /> },
       { path: 'users', element: <UsersPage /> },
+      { path: 'users/:userId', element: <UserDetailPage /> },
       { path: 'todos', element: <TodosPage /> },
 /*
       path: '*' catches unknown URLs.

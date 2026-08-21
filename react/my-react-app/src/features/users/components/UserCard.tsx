@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { User } from '../types/user'
 
 type UserCardProps = {
@@ -19,7 +20,7 @@ export function UserCard({ user }: UserCardProps) {
       <header className="user-card__header">
         <div className="user-card__avatar" aria-hidden="true">{getInitials(user.name)}</div>
         <div>
-          <h2>{user.name}</h2>
+          <h2><Link to={`/users/${user.id}`}>{user.name}</Link></h2>
           <p>@{user.username}</p>
         </div>
       </header>
@@ -40,6 +41,7 @@ export function UserCard({ user }: UserCardProps) {
       </dl>
 
       <div className="user-card__links">
+        <Link to={`/users/${user.id}`}>View profile</Link>
         <a href={`mailto:${user.email}`}>Email</a>
         <a href={`https://${user.website}`} target="_blank" rel="noreferrer">Website</a>
       </div>
