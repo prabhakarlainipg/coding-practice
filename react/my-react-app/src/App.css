@@ -94,11 +94,12 @@
 .danger-button:hover:not(:disabled) { color: #fff; background: #b42318; }
 .danger-button:disabled { cursor: wait; opacity: .6; }
 .danger-button:focus-visible { outline: 3px solid rgba(180, 35, 24, .25); outline-offset: 2px; }
-.delete-confirmation { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px; border: 1px solid #f2c8c8; border-radius: 10px; background: #fffafa; }
-.delete-confirmation > div { flex: 1 1 240px; display: grid; gap: 2px; }
-.delete-confirmation strong { color: #8e211a; }
-.delete-confirmation span { color: #7c6565; font-size: 12px; }
 .delete-error { margin: 12px 0 0; color: #b42318; font-size: 13px; font-weight: 700; }
+.modal-backdrop { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(9, 13, 22, .62); backdrop-filter: blur(3px); }
+.modal-dialog { width: min(100%, 480px); padding: 28px; border: 1px solid #e3e8f0; border-radius: 16px; color: #18202f; background: #fff; box-shadow: 0 24px 70px rgba(0, 0, 0, .24); }
+.modal-dialog h2 { margin: 0 0 10px; color: #8e211a; font-size: 23px; }
+.modal-dialog > p { margin: 0; color: #687386; line-height: 1.6; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
 .comments { margin-top: 24px; padding: clamp(24px, 4vw, 38px); border: 1px solid #e3e8f0; border-radius: 16px; background: #fff; }
 .comments__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
 .comments__heading h2 { margin: 6px 0 0; color: #20283a; font-size: 24px; }
@@ -284,6 +285,7 @@
 :root[data-theme='dark'] .todo-toolbar,
 :root[data-theme='dark'] .todos-list li,
 :root[data-theme='dark'] .route-loading { border-color: #303849; background: #1b202c; box-shadow: none; }
+:root[data-theme='dark'] .modal-dialog { border-color: #3b4354; color: #d7dcea; background: #1b202c; }
 :root[data-theme='dark'] .app-header,
 :root[data-theme='dark'] .sidebar { border-color: #303849; }
 :root[data-theme='dark'] h1,

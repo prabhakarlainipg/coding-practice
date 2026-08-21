@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { z } from 'zod'
+import { AccessibleModal } from '../components/AccessibleModal'
 import { PostComments } from '../features/comments/components/PostComments'
 import { useDeletePost } from '../features/posts/mutations/useDeletePost'
 import { usePost } from '../features/posts/queries/usePosts'
@@ -15,6 +16,10 @@ function PostDetail({ postId }: { postId: number }) {
   const deletePostMutation = useDeletePost()
   const { data: post, error, isError, isFetching, isPending, refetch } =
     usePost(postId)
+
+  const closeDeleteModal = useCallback(() => {
+    if (!deletePostMutation.isPending) setIsConfirmingDelete(false)
+  }, [deletePostMutation.isPending])
 
   async function confirmDelete() {
     try {
@@ -56,40 +61,43 @@ function PostDetail({ postId }: { postId: number }) {
           <Link className="secondary-link" to={`/posts/${postId}/edit`}>
             Edit post
           </Link>
-          {isConfirmingDelete ? (
-            <div className="delete-confirmation" role="alertdialog" aria-labelledby="delete-heading">
-              <div>
-                <strong id="delete-heading">Delete this post?</strong>
-                <span>This action cannot be undone.</span>
-              </div>
-              <button
-                className="danger-button"
-                disabled={deletePostMutation.isPending}
-                type="button"
-                onClick={() => void confirmDelete()}
-              >
-                {deletePostMutation.isPending ? 'Deleting…' : 'Confirm delete'}
-              </button>
-              <button
-                className="secondary-button"
-                disabled={deletePostMutation.isPending}
-                type="button"
-                onClick={() => setIsConfirmingDelete(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button className="danger-button" type="button" onClick={() => setIsConfirmingDelete(true)}>
-              Delete post
-            </button>
-          )}
+          <button className="danger-button" type="button" onClick={() => setIsConfirmingDelete(true)}>
+            Delete post
+          </button>
+        </div>
+
+        <AccessibleModal
+          isOpen={isConfirmingDelete}
+          title="Delete this post?"
+          isDismissible={!deletePostMutation.isPending}
+          onClose={closeDeleteModal}
+        >
+          <p>This action cannot be undone. The post will be removed from the local cache.</p>
           {deletePostMutation.isError && (
             <p className="delete-error" role="alert">
               {getErrorMessage(deletePostMutation.error, 'delete post')}
             </p>
           )}
-        </div>
+          <div className="modal-actions">
+            <button
+              className="danger-button"
+              data-autofocus
+              disabled={deletePostMutation.isPending}
+              type="button"
+              onClick={() => void confirmDelete()}
+            >
+              {deletePostMutation.isPending ? 'Deleting…' : 'Confirm delete'}
+            </button>
+            <button
+              className="secondary-button"
+              disabled={deletePostMutation.isPending}
+              type="button"
+              onClick={closeDeleteModal}
+            >
+              Cancel
+            </button>
+          </div>
+        </AccessibleModal>
       </article>
     )
   }
