@@ -65,6 +65,7 @@ export function LoginPage() {
             <label htmlFor="login-email">Email address</label>
             <input
               id="login-email"
+              data-cy="login-email"
               type="email"
               autoComplete="email"
               aria-describedby={errors.email ? 'login-email-error' : 'login-email-help'}
@@ -72,20 +73,19 @@ export function LoginPage() {
               {...register('email')}
             />
             {errors.email ? (
-              <p id="login-email-error" className="field-error" role="alert">
+              <p id="login-email-error" className="field-error" data-cy="login-email-error" role="alert">
                 {errors.email.message}
               </p>
             ) : (
-                <>
-              <small id="login-email-help">Admin: Sincere@april.biz</small>
-              <small id="login-email-help">Member: Shanna@melissa.tv</small>
-              </>
+              <small id="login-email-help">
+                Admin: Sincere@april.biz<br />Member: Shanna@melissa.tv
+              </small>
             )}
           </div>
 
           {error && <p className="login-error" role="alert">{getErrorMessage(error, 'login')}</p>}
 
-          <button className="primary-button" disabled={isPending} type="submit">
+          <button className="primary-button" data-cy="login-submit" disabled={isPending} type="submit">
             {isPending ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
