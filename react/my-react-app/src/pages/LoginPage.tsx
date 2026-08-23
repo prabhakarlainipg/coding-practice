@@ -83,7 +83,11 @@ export function LoginPage() {
             )}
           </div>
 
-          {error && <p className="login-error" role="alert">{getErrorMessage(error, 'login')}</p>}
+          {error && (
+            <p className="login-error" data-cy="login-error" role="alert">
+              {getErrorMessage(error, 'login')}
+            </p>
+          )}
 
           <button className="primary-button" data-cy="login-submit" disabled={isPending} type="submit">
             {isPending ? 'Signing in…' : 'Sign in'}

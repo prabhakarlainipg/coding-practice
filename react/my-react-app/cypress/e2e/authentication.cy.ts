@@ -1,3 +1,24 @@
+const adminUser = {
+  id: 1,
+  name: 'Leanne Graham',
+  username: 'Bret',
+  email: 'Sincere@april.biz',
+  address: {
+    street: 'Kulas Light',
+    suite: 'Apt. 556',
+    city: 'Gwenborough',
+    zipcode: '92998-3874',
+    geo: { lat: '-37.3159', lng: '81.1496' },
+  },
+  phone: '1-770-736-8031 x56442',
+  website: 'hildegard.org',
+  company: {
+    name: 'Romaguera-Crona',
+    catchPhrase: 'Multi-layered client-server neural-net',
+    bs: 'harness real-time e-markets',
+  },
+}
+
 describe('Application access', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
@@ -32,26 +53,6 @@ describe('Application access', () => {
   })
 
   it('logs in an admin with a stubbed users response', () => {
-    const adminUser = {
-      id: 1,
-      name: 'Leanne Graham',
-      username: 'Bret',
-      email: 'Sincere@april.biz',
-      address: {
-        street: 'Kulas Light',
-        suite: 'Apt. 556',
-        city: 'Gwenborough',
-        zipcode: '92998-3874',
-        geo: { lat: '-37.3159', lng: '81.1496' },
-      },
-      phone: '1-770-736-8031 x56442',
-      website: 'hildegard.org',
-      company: {
-        name: 'Romaguera-Crona',
-        catchPhrase: 'Multi-layered client-server neural-net',
-        bs: 'harness real-time e-markets',
-      },
-    }
 // register intercept
     cy.intercept(
       { method: 'GET', pathname: '/users' },
@@ -73,6 +74,44 @@ describe('Application access', () => {
     cy.location('pathname').should('equal', '/')
     cy.contains('[role="status"]', 'Welcome back, Leanne Graham.').should('be.visible')
     cy.contains('[data-cy="user-menu"]', 'Leanne Graham · admin').should('be.visible')
+  })
+
+  it('shows a loading state while the users request is pending', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 200, body: [adminUser], delay: 1000 }, //stimulate slow api response
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.get('[data-cy="login-submit"]')
+      .should('be.disabled')
+      .and('contain.text', 'Signing in…')
+
+    cy.wait('@getUsers')
+    cy.location('pathname').should('equal', '/')
+  })
+
+  it('shows an error and allows retrying after a server failure', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 500, body: { message: 'Internal server error' } },
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.wait('@getUsers').its('response.statusCode').should('equal', 500)
+    cy.get('[data-cy="login-error"]')
+      .should('be.visible')
+      .and('contain.text', 'The login request failed (500).')
+    cy.get('[data-cy="login-submit"]')
+      .should('be.enabled')
+      .and('contain.text', 'Sign in')
+    cy.location('pathname').should('equal', '/login')
   })
 })
 
