@@ -21,7 +21,7 @@ export function UserMenu() {
   return (
     <div className="user-menu" data-cy="user-menu">
       <span title={user.email}>{user.name} · {user.role}</span>
-      <button type="button" onClick={handleLogout}>Log out</button>
+      <button data-cy="logout" type="button" onClick={handleLogout}>Log out</button>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { buildUser, type ApiUser } from '../support/test-data/userFactory'
 
 const adminUser = buildUser()
+const authSessionStorageKey = 'projecthub.auth-session'
 
 describe('Application access', () => {
   beforeEach(() => {
@@ -61,6 +62,72 @@ describe('Application access', () => {
     cy.location('pathname').should('equal', '/')
     cy.contains('[role="status"]', 'Welcome back, Leanne Graham.').should('be.visible')
     cy.contains('[data-cy="user-menu"]', 'Leanne Graham · admin').should('be.visible')
+  })
+
+  it('returns to the requested protected URL and persists the session', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 200, fixture: 'users.json' },
+    ).as('getUsers')
+    cy.visit('/posts?sort=oldest&page=2')
+    cy.location('pathname').should('equal', '/login')
+
+    // Register this after the document visit so it matches the API request, not navigation.
+    cy.intercept(
+      { method: 'GET', pathname: '/posts' },
+      { statusCode: 200, body: [] },
+    ).as('getPosts')
+
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.wait('@getUsers')
+    cy.wait('@getPosts')
+    cy.location('pathname').should('equal', '/posts')
+    cy.location('search').should('equal', '?sort=oldest&page=2')
+  /*
+   cy.window() yields the application’s browser window, not Cypress’s own runner window.
+   window.localStorage
+    window.sessionStorage
+    Browser functions
+    Global application values
+    Browser APIs*/
+    cy.window().then((window) => {
+      const storedSession = window.localStorage.getItem(authSessionStorageKey)
+
+      expect(storedSession).not.to.equal(null)
+      expect(JSON.parse(storedSession!)).to.deep.equal({
+        user: {
+          id: adminUser.id,
+          name: adminUser.name,
+          username: adminUser.username,
+          email: adminUser.email,
+          role: 'admin',
+        },
+      })
+    })
+  })
+
+  it('clears the session and returns to login when the user logs out', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 200, fixture: 'users.json' },
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+    cy.wait('@getUsers')
+    cy.location('pathname').should('equal', '/')
+
+    cy.get('[data-cy="logout"]').click()
+
+    cy.location('pathname').should('equal', '/login')
+    cy.get('[data-cy="user-menu"]').should('not.exist')
+    cy.contains('[role="status"]', 'Your local session has been cleared.').should('be.visible')
+    cy.window().then((window) => {
+      expect(window.localStorage.getItem(authSessionStorageKey)).to.equal(null)
+    })
   })
 
   it('shows a loading state while the users request is pending', () => {
