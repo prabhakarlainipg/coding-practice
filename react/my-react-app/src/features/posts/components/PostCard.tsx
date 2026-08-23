@@ -5,7 +5,7 @@ type PostCardProps = { post: Post }
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <article className="post-card">
+    <article className="post-card" data-cy="post-card">
       <div className="post-card__meta">
         <span>Post #{post.id}</span>
         <span>User {post.userId}</span>
