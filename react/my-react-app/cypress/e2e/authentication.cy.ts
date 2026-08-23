@@ -103,7 +103,16 @@ describe('Application access', () => {
     cy.visit('/login')
     cy.get('[data-cy="login-email"]').type(adminUser.email)
     cy.get('[data-cy="login-submit"]').click()
-
+//One property  → its()
+// Several checks → then()
+    //cy.wait('@getUsers')
+    //   .its('request.method')
+    //   .should('equal', 'GET')
+    //cy.wait('@getUsers').then(({ request, response }) => {
+    //   expect(request.method).to.equal('GET')
+    //   expect(request.url).to.include('/users')
+    //   expect(response?.statusCode).to.equal(200)
+    // })
     cy.wait('@getUsers').its('response.statusCode').should('equal', 500)
     cy.get('[data-cy="login-error"]')
       .should('be.visible')
