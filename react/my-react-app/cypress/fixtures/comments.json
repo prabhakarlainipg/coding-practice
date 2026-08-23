@@ -1,0 +1,16 @@
+[
+  {
+    "postId": 7,
+    "id": 701,
+    "name": "Useful experiment summary",
+    "email": "maya@example.com",
+    "body": "The comparison against the control group made the result easy to understand."
+  },
+  {
+    "postId": 7,
+    "id": 702,
+    "name": "Follow-up question",
+    "email": "liam@example.com",
+    "body": "Can we run the same experiment for returning users?"
+  }
+]
