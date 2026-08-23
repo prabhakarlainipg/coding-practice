@@ -36,6 +36,9 @@ describe('Application access', () => {
   })
 
   it('logs in an admin with a stubbed users response', () => {
+    //S → Static and realistic? Use fixture.
+    // V → Variations required? Use factory.
+    // D → Dynamic file changes? Use readFile or generated object.
     cy.fixture<ApiUser[]>('users.json').then((users) => {
       cy.intercept(
         { method: 'GET', pathname: '/users' },
