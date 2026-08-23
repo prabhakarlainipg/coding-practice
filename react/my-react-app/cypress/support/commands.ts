@@ -8,6 +8,12 @@ export type LoginAsOptions = {
   user?: ApiUser
 }
 
+export type PostFormValues = {
+  userId: number
+  title: string
+  body: string
+}
+
 function createStoredSession(user: ApiUser, role: AuthRole) {
   return {
     user: {
@@ -25,11 +31,19 @@ declare global {
     interface Chainable {
       /** Cache and restore a simulated ProjectHub authentication session. */
       loginAs(options?: LoginAsOptions): Chainable<null>
+      /** Replace all values in the shared create/edit post form. */
+      fillPostForm(values: PostFormValues): Chainable<void>
     }
   }
 }
 
 export function registerCommands() {
+  Cypress.Commands.add('fillPostForm', ({ userId, title, body }) => {
+    cy.get('#userId').clear().type(String(userId))
+    cy.get('#title').clear().type(title)
+    return cy.get('#body').clear().type(body).then(() => undefined)
+  })
+
   Cypress.Commands.add('loginAs', (options: LoginAsOptions = {}) => {
     const user = options.user ?? buildUser()
     const role = options.role ?? (user.id === 1 ? 'admin' : 'member')

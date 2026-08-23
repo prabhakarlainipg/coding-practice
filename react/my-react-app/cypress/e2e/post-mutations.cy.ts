@@ -47,9 +47,7 @@ describe('Post create and edit mutations', () => {
     ).as('createPost')
 
     cy.visit('/posts/new')
-    cy.get('#userId').clear().type(String(input.userId))
-    cy.get('#title').type(input.title)
-    cy.get('#body').type(input.body)
+    cy.fillPostForm(input)
     cy.contains('Unsaved changes').should('be.visible')
     cy.contains('button', 'Create post').click()
 
@@ -75,8 +73,11 @@ describe('Post create and edit mutations', () => {
     ).as('createPost')
 
     cy.visit('/posts/new')
-    cy.get('#title').type('A recoverable draft')
-    cy.get('#body').type('The user should not lose this text after a server failure.')
+    cy.fillPostForm({
+      userId: 1,
+      title: 'A recoverable draft',
+      body: 'The user should not lose this text after a server failure.',
+    })
     cy.contains('button', 'Create post').click()
     cy.wait('@createPost')
 
@@ -121,8 +122,7 @@ describe('Post create and edit mutations', () => {
     cy.get('#body').should('have.value', originalPost.body)
     cy.contains('No changes').should('be.visible')
 
-    cy.get('#title').clear().type(updatedInput.title)
-    cy.get('#body').clear().type(updatedInput.body)
+    cy.fillPostForm(updatedInput)
     cy.contains('button', 'Save changes').click()
     cy.contains('button', 'Saving…').should('be.disabled')
 
