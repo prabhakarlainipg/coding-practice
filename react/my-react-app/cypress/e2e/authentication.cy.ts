@@ -122,6 +122,58 @@ describe('Application access', () => {
       .and('contain.text', 'Sign in')
     cy.location('pathname').should('equal', '/login')
   })
+
+  it('handles a network connection failure', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { forceNetworkError: true },
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.wait('@getUsers').should('have.property', 'error')
+    cy.get('[data-cy="login-error"]')
+      .should('be.visible')
+      .and('contain.text', 'Failed to fetch')
+    cy.get('[data-cy="login-submit"]').should('be.enabled')
+    cy.location('pathname').should('equal', '/login')
+  })
+
+  it('handles a successful response with no matching account', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 200, body: [] },
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.wait('@getUsers').its('response.statusCode').should('equal', 200)
+    cy.get('[data-cy="login-error"]')
+      .should('be.visible')
+      .and('contain.text', 'No account was found for that email address.')
+    cy.location('pathname').should('equal', '/login')
+  })
+
+  it('rejects a successful response with an invalid data shape', () => {
+    cy.intercept(
+      { method: 'GET', pathname: '/users' },
+      { statusCode: 200, body: [{ ...adminUser, id: 'not-a-number' }] },
+    ).as('getUsers')
+
+    cy.visit('/login')
+    cy.get('[data-cy="login-email"]').type(adminUser.email)
+    cy.get('[data-cy="login-submit"]').click()
+
+    cy.wait('@getUsers').its('response.statusCode').should('equal', 200)
+    cy.get('[data-cy="login-error"]')
+      .should('be.visible')
+      .and('contain.text', 'The API returned data in an unexpected format.')
+    cy.location('pathname').should('equal', '/login')
+  })
 })
 
 /*| `.should(callback)` | `.then(callback)` |
