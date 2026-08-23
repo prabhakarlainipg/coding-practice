@@ -129,6 +129,7 @@ export function PostsPage() {
             <div className="search-bar__control">
               <input
                 id="post-search"
+                data-cy="post-search"
                 type="search"
                 value={searchTerm}
                 placeholder="Search by title or content"
@@ -148,6 +149,7 @@ export function PostsPage() {
             <label htmlFor="post-sort">Sort posts</label>
             <select
               id="post-sort"
+              data-cy="post-sort"
               value={sort}
               onChange={(event) => updateSort(event.target.value as SortOption)}
             >
