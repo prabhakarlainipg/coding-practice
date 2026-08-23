@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "ES2023",
     "types": ["cypress", "node"]

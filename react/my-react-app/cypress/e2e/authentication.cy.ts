@@ -1,23 +1,6 @@
-const adminUser = {
-  id: 1,
-  name: 'Leanne Graham',
-  username: 'Bret',
-  email: 'Sincere@april.biz',
-  address: {
-    street: 'Kulas Light',
-    suite: 'Apt. 556',
-    city: 'Gwenborough',
-    zipcode: '92998-3874',
-    geo: { lat: '-37.3159', lng: '81.1496' },
-  },
-  phone: '1-770-736-8031 x56442',
-  website: 'hildegard.org',
-  company: {
-    name: 'Romaguera-Crona',
-    catchPhrase: 'Multi-layered client-server neural-net',
-    bs: 'harness real-time e-markets',
-  },
-}
+import { buildUser, type ApiUser } from '../support/test-data/userFactory'
+
+const adminUser = buildUser()
 
 describe('Application access', () => {
   beforeEach(() => {
@@ -53,11 +36,12 @@ describe('Application access', () => {
   })
 
   it('logs in an admin with a stubbed users response', () => {
-// register intercept
-    cy.intercept(
-      { method: 'GET', pathname: '/users' },
-      { statusCode: 200, body: [adminUser] },
-    ).as('getUsers') // name intercept as getUsers
+    cy.fixture<ApiUser[]>('users.json').then((users) => {
+      cy.intercept(
+        { method: 'GET', pathname: '/users' },
+        { statusCode: 200, body: users },
+      ).as('getUsers')
+    })
 
     cy.visit('/login')
     cy.get('[data-cy="login-email"]').type(adminUser.email)
@@ -79,7 +63,7 @@ describe('Application access', () => {
   it('shows a loading state while the users request is pending', () => {
     cy.intercept(
       { method: 'GET', pathname: '/users' },
-      { statusCode: 200, body: [adminUser], delay: 1000 }, //stimulate slow api response
+      { statusCode: 200, fixture: 'users.json', delay: 1000 }, // Simulate a slow API response.
     ).as('getUsers')
 
     cy.visit('/login')
@@ -159,9 +143,11 @@ describe('Application access', () => {
   })
 
   it('rejects a successful response with an invalid data shape', () => {
+    const invalidUser = { ...buildUser({ name: 'Invalid User' }), id: 'not-a-number' }
+
     cy.intercept(
       { method: 'GET', pathname: '/users' },
-      { statusCode: 200, body: [{ ...adminUser, id: 'not-a-number' }] },
+      { statusCode: 200, body: [invalidUser] },
     ).as('getUsers')
 
     cy.visit('/login')
