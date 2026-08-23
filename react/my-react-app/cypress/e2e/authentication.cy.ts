@@ -232,6 +232,44 @@ describe('Application access', () => {
   })
 })
 
+describe('Programmatic authenticated session', () => {
+  it('opens the posts page with a cached admin session', () => {
+    cy.loginAs()
+    cy.intercept(
+      {
+        method: 'GET',
+        hostname: 'jsonplaceholder.typicode.com',
+        pathname: '/posts',
+      },
+      { statusCode: 200, body: [] },
+    ).as('getPosts')
+
+    cy.visit('/posts')
+
+    cy.wait('@getPosts')
+    cy.location('pathname').should('equal', '/posts')
+    cy.contains('[data-cy="user-menu"]', 'Leanne Graham · admin').should('be.visible')
+  })
+
+  it('reuses the same cached admin session on another protected page', () => {
+    cy.loginAs()
+    cy.intercept(
+      {
+        method: 'GET',
+        hostname: 'jsonplaceholder.typicode.com',
+        pathname: '/todos',
+      },
+      { statusCode: 200, body: [] },
+    ).as('getTodos')
+
+    cy.visit('/todos')
+
+    cy.wait('@getTodos')
+    cy.location('pathname').should('equal', '/todos')
+    cy.contains('h1', 'Todos').should('be.visible')
+  })
+})
+
 /*| `.should(callback)` | `.then(callback)` |
 |---|---|
 | Callback can run repeatedly | Callback runs once |
