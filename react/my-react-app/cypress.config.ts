@@ -9,5 +9,7 @@ export default defineConfig({
     requestTimeout: 10_000,  //5000 by default
     responseTimeout: 30_000,
     pageLoadTimeout: 60_000,*/
+    viewportWidth: 1280,
+    viewportHeight: 720,
   },
 })
