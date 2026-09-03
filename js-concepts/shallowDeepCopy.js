@@ -25,16 +25,16 @@ console.log(obj);
 
 //DEEP COPY USING JSON.parse(JSON.stringify))
 //Date becomes string
-// undefined removed
-// function removed
-// Map/Set not copied correctly
+// UNDEFINED removed
+// FUNCTION removed
+// MAP/SET not copied correctly
 // Cannot handle circular references
 const copy = JSON.parse(JSON.stringify(obj));
 console.log(copy);
 
 
 //DEEP COPY USING structuredClone
-//Does not support functions.
+//Does not support FUNCTIONS.
 const copy2  = structuredClone(obj);
 console.log(copy2);
 
