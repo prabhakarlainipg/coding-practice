@@ -33,6 +33,7 @@ export function AppLayout() {
         </Link>
         <div className="header-actions">
           <NetworkStatus />
+
           <ThemeToggle />
           <UserMenu />
           <span className="environment-badge">Development {count}</span>
