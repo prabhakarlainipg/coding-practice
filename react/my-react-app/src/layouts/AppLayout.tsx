@@ -7,12 +7,15 @@ import { RouteErrorFallback } from '../components/RouteErrorFallback'
 import { RouteLoading } from '../components/RouteLoading'
 import { UserMenu } from '../features/auth/components/UserMenu'
 import { ThemeToggle } from '../features/preferences/components/ThemeToggle'
+import {useSelector} from "react-redux";
+import type {CounterState} from "../pages/DashboardPage.tsx";
 
 /*
 The shared page structure
 */
 export function AppLayout() {
-  const location = useLocation()
+  const location = useLocation();
+  const count =  useSelector((state : CounterState)=> state.counter.value);
 
   return (
     <div className="app-shell">
@@ -32,7 +35,7 @@ export function AppLayout() {
           <NetworkStatus />
           <ThemeToggle />
           <UserMenu />
-          <span className="environment-badge">Development</span>
+          <span className="environment-badge">Development {count}</span>
         </div>
       </header>
       <div className="app-layout">

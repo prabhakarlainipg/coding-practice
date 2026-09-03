@@ -1,5 +1,15 @@
+import UsersList from "../components/user/Users.tsx";
+import {Counter} from "../components/counter/Counter.tsx";
+export type CounterState = {
+  counter : {
+    value : number
+  };
+}
 export function DashboardPage() {
+
+
   return (
+      <>
     <section aria-labelledby="dashboard-heading" className="dashboard">
       <div className="dashboard__heading">
         <div>
@@ -27,5 +37,20 @@ export function DashboardPage() {
         </article>
       </div>
     </section>
+
+        <h2> Counter Example by Redux Toolkit</h2>
+<div>
+<Counter/>
+
+  <h2> Users Example by Redux Toolkit</h2>
+  <section>
+ <UsersList/>
+
+  </section>
+
+</div>
+
+
+</>
   )
 }
