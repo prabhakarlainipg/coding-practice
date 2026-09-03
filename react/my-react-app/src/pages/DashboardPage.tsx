@@ -1,5 +1,8 @@
 import UsersList from "../components/user/Users.tsx";
 import {Counter} from "../components/counter/Counter.tsx";
+import UsersListUsingRTK from "../components/user/UsersRTK.tsx";
+
+import CreateUserForm from "../components/user/CreateUserTRK.tsx";
 export type CounterState = {
   counter : {
     value : number
@@ -46,6 +49,16 @@ export function DashboardPage() {
   <section>
  <UsersList/>
 
+  </section>
+
+  <h2> Users Example by Redux Toolkit Query (RTK)</h2>
+  <section>
+    <UsersListUsingRTK/>
+
+  </section>
+
+  <section>
+    <CreateUserForm/>
   </section>
 
 </div>
