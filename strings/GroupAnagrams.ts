@@ -11,7 +11,16 @@ const groupAnagrams = (data: string[]) => {
             map.set(sortedString, [data[i]]);
         }
     }
+
+    for(let key of map.keys()){
+        console.log(key);
+        console.log(map.get(key));
+    }
+    for(let value of map.values()){
+        console.log(value);
+    }
     return Array.from(map.values());
+
 
 }
 

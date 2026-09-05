@@ -11,6 +11,7 @@ const removeDuplicatesFromSorted= (ar:number[]) => {
             write++;
         }
     }
+    console.log(ar.slice(0,write));
     return write;
 }
 
